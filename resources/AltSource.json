@@ -1,0 +1,82 @@
+{
+  "name": "NeoFreeBird",
+  "subtitle": "A modified Twitter app, with branding reverts, BHTwitter and other QoL modifications.",
+  "iconURL": "https://raw.githubusercontent.com/orionblur/NeoFreeBird/v7/resources/icon_rounded.png",
+  "headerURL": "https://pbs.twimg.com/profile_banners/1878595268255297537/1755453861/1500x500",
+  "website": "https://github.com/orionblur/NeoFreeBird",
+  "tintColor": "#1DA1F2",
+  "featuredApps": [
+    "com.atebits.Tweetie2",
+    "com.atebits.Tweetie2"
+  ],
+  "apps": [
+    {
+      "name": "Twitter",
+      "bundleIdentifier": "com.atebits.Tweetie2",
+      "developerName": "actuallyaridan, nyaathea, timi2506, theacrat, orionblur",
+      "subtitle": "NeoFreeBird version 7.1.0",
+      "localizedDescription": "NeoFreeBird-BHTwitter, changed to look like the app before the rebrand.",
+      "iconURL": "https://raw.githubusercontent.com/orionblur/NeoFreeBird/v7/resources/icon_rounded.png",
+      "tintColor": "#1DA1F2",
+      "category": "lifestyle",
+      "screenshots": [
+        "https://raw.githubusercontent.com/orionblur/NeoFreeBird/v7/resources/timeline/timeline1.png",
+        "https://raw.githubusercontent.com/orionblur/NeoFreeBird/v7/resources/timeline/timeline2.png",
+        "https://raw.githubusercontent.com/orionblur/NeoFreeBird/v7/resources/timeline/timeline3.png",
+        "https://raw.githubusercontent.com/orionblur/NeoFreeBird/v7/resources/timeline/timeline4.png",
+        "https://raw.githubusercontent.com/orionblur/NeoFreeBird/v7/resources/timeline/timeline5.png"
+      ],
+      "versions": [
+        {
+          "version": "12.31.1",
+          "buildVersion": "1",
+          "date": "2026-10-05T04:37:07Z",
+          "downloadURL": "https://github.com/orionblur/NeoFreeBird/releases/download/v7.1.0/orionblur-NFB-BHTwitter-sideloaded-Twitter_7.1.0_12.31.1.ipa",
+          "size": 257060615,
+          "minOSVersion": "15.0",
+          "localizedDescription": "New Features\n- Added a “Download all Videos” button (only works when all media items are videos)\n- Added option to see quote and retweet numbers (with an option for unrounded counts)\n- Added an option to play a custom sound (under 7 seconds and with the AAC format) when a tweet is posted\n- Hide the “Download Grok Bot” button on Grok Tweets\n- NeoFreeBird now has (preliminary!) support for MacOS!\n\nFixes\n- Fixed Spaces not loading\n- Fixed all web views not loading (including Community Notes, reports, and web replying)\n- Fixed the header switching back to black from dim on iPad\n- Fixed mute settings not loading\n- Fixed ads showing up in the Tiktok-like video feed\n- Fixed verified tweets not showing up in searches and edit histories when the “Hide verified tweets” option was on\n- Removed the “Edit Tweet” prompt showing up, this has been server-side for a while\n- Removed tweet source labels from the codebase, as X has removed it from all API calls\n- Fixed manual Grok Translate calls\n\nKnown Issues\n- The option to see quote and retweet numbers is not localized. Most likely will be fixed in the next version.\n"
+        },
+        {
+          "version": "12.28.1",
+          "buildVersion": "2",
+          "date": "2026-09-24T03:46:28Z",
+          "downloadURL": "https://github.com/orionblur/NeoFreeBird/releases/download/v7.0.0/orionblur-NFB-BHTwitter-sideloaded-Twitter_7.0.0_12.28.1.ipa",
+          "size": 258724592,
+          "minOSVersion": "15.0",
+          "localizedDescription": "- Added option to hide Message button on tweets\n- Updated X to 12.28.1\n- Removed the “Try Grok Bot” button\n- Added a new login flow"
+        }
+      ],
+      "appPermissions": {
+        "entitlements": [
+          "aps-environment",
+          "com.apple.developer.siri",
+          "com.apple.developer.applesignin",
+          "com.apple.developer.payment-pass-provisioning",
+          "com.apple.developer.usernotifications.communication",
+          "com.apple.developer.usernotifications.time-sensitive",
+          "com.apple.developer.pass-type-identifiers",
+          "com.apple.developer.devicecheck.appattest-environment",
+          "com.apple.developer.networking.carrier-constrained.app-optimized",
+          "keychain-access-groups",
+          "com.apple.security.application-groups",
+          "com.apple.developer.associated-appclip-app-identifiers",
+          "com.apple.developer.networking.carrier-constrained.appcategory",
+          "com.apple.developer.associated-domains"
+        ],
+        "privacy": {
+          "NSCalendarsUsageDescription": "Add events to your calendar from X.",
+          "NSCameraUsageDescription": "Capture and post photos and videos from X.",
+          "NSContactsUsageDescription": "We will securely upload your contacts to our servers to help you connect with friends and suggest users to follow on X.",
+          "NSFaceIDUsageDescription": "Use FaceID to authenticate on X.",
+          "NSLocationUsageDescription": "Enjoy the X experience tailored to your location.",
+          "NSLocationWhenInUseUsageDescription": "Enjoy the X experience tailored to your location.",
+          "NSMicrophoneUsageDescription": "Capture and post videos with sound from X.",
+          "NSPhotoLibraryAddUsageDescription": ">This lets you download photos and videos to your Photos.",
+          "NSPhotoLibraryUsageDescription": "Allow access to share photos from your camera roll.",
+          "NSSpeechRecognitionUsageDescription": "Going forward, whenever you choose to share captions on this device, Apple will provide the service. Doing so helps make sure people of all hearing abilities can access your content.",
+          "NSUserTrackingUsageDescription": "This helps X show you more relevant ads."
+        }
+      }
+    }
+  ]
+}
