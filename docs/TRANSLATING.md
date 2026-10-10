@@ -75,7 +75,7 @@ NeoFreeBird currently supports these (non-English) languages (although more can 
 "NEW_OPTION_DETAIL" = "More text here";
 ```
 4. **Commit and push your changes to your fork.** Make sure that everything looks good before making a PR.
-5. **Make a PR to this repo **(go to the [Pull Requests](https://github.com/orionblur/NeoFreeBird/pulls) tab, click on "New Pull Request", and have the base repository be orionblur's, with the head repo being yours.
+5. **Make a PR to this repo **(go to the [Pull Requests](https://github.com/NeoFreeBird/app/pulls) tab, click on "New Pull Request", and have the base repository be orionblur's, with the head repo being yours.
 6. I will go through the PR and merge it as soon as I can get to it. It'll be very helpful if you can compile the app (either locally or through Github Actions) and show that your new translations are taking shape (although this is purely optional!).
 
 That's it! If you have any questions on translations, please feel free to ping me or make an issue, and I'll do my best to help.

@@ -456,7 +456,7 @@
 }
 
 - (void)footerLabelTapped:(UIGestureRecognizer*)sender {
-    NSURL* url = [NSURL URLWithString:@"https://github.com/orionblur/NeoFreeBird"];
+    NSURL* url = [NSURL URLWithString:@"https://github.com/NeoFreeBird/app"];
     if ([[UIApplication sharedApplication] canOpenURL:url]) {
         [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
     }
