@@ -281,7 +281,8 @@
         @{
             @"title": @"OrionBlur",
             @"username": @"orionblur",
-            @"avatarURL": @"https://unavatar.io/x/orionblur",
+            @"avatarURL": @"https://unavatar.io/x/orionblur?fallback=https://neofreebird.com/"
+                          @"images/orionblur.jpg",
             @"userID": @"2023606533255540736"
         },
         @{
@@ -463,7 +464,7 @@
 }
 - (void)footerLabelLongPressed:(UILongPressGestureRecognizer*)sender {
     if (sender.state == UIGestureRecognizerStateBegan) {
-        NSURL* url = [NSURL URLWithString:@"https://www.youtube.com/watch?v=UxbyOQgTsVc"];
+        NSURL* url = [NSURL URLWithString:@"https://www.youtube.com/watch?v=EwOhODw6WOg"];
         if ([[UIApplication sharedApplication] canOpenURL:url]) {
             [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
         }
