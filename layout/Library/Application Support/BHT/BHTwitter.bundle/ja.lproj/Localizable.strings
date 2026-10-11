@@ -84,7 +84,7 @@
 "PADLOCK_TITLE" = "Xをロック";
 "PADLOCK_DETAIL" = "Xを開く際にFace IDまたはパスコードによる認証を必要とします。";
 
-"NEW_INAPP_WEBVIEW_TITLE" = "アプリ内ブラウザを改善（ベータ版）";
+"NEW_INAPP_WEBVIEW_TITLE" = "新アプリ内ブラウザ（beta版）";
 "NEW_INAPP_WEBVIEW_DETAIL" = "リンクを開く際に、Xの新しいアプリ内ブラウザを使用します。";
 
 "ALWAYS_OPEN_SAFARI_TITLE" = "外部ブラウザで開く";
@@ -266,7 +266,7 @@
 "TAB_BAR_THEMING_TITLE" = "クラシックなタブバーを使用";
 "TAB_BAR_THEMING_DETAIL" = "選択中のタブにアクセントカラーを適用し、従来のタブバーの外観にします。";
 
-"DISABLE_RTL_TITLE" = "左から右（LTR）のレイアウトを使用";
+"DISABLE_RTL_TITLE" = "LTRのレイアウトを使用";
 "DISABLE_RTL_DETAIL" = "右から左に読む言語の場合でも、左から右へのレイアウトを強制します。";
 
 "SHOW_SCROLL_INDICATOR_TITLE" = "スクロールバーを常に表示";
