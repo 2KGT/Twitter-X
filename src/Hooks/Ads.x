@@ -248,3 +248,62 @@ static void RemovePromotedImmersiveCards(id viewController) {
 }
 
 %end
+
+static BOOL IsImmersiveTimelineURL(NSURL* url) {
+    NSArray* parts = url.path.pathComponents;
+    return [parts containsObject:@"graphql"] &&
+           [@[@"ImmersiveViewerExploreMixerTimeline", @"ImmersiveProfileViewer"]
+               containsObject:parts.lastObject];
+}
+
+static id RemovePromotedEntries(id node, BOOL* removed) {
+    if ([node isKindOfClass:[NSArray class]]) {
+        NSMutableArray* kept = [NSMutableArray array];
+        for (id value in node) {
+            id entryID = [value isKindOfClass:[NSDictionary class]]
+                             ? value[@"entry_id"]
+                             : nil;
+            if ([entryID isKindOfClass:[NSString class]] &&
+                [entryID hasPrefix:@"promoted-tweet-"]) {
+                *removed = YES;
+                continue;
+            }
+
+            [kept addObject:RemovePromotedEntries(value, removed)];
+        }
+        return kept;
+    }
+
+    if ([node isKindOfClass:[NSDictionary class]]) {
+        NSMutableDictionary* copy = [node mutableCopy];
+        for (NSString* key in node) {
+            copy[key] = RemovePromotedEntries(node[key], removed);
+        }
+        return copy;
+    }
+
+    return node;
+}
+
+%hook TNLResponseInfo
+
+- (instancetype)initWithFinalURLRequest:(NSURLRequest*)request
+                            URLResponse:(NSURLResponse*)response
+                                 source:(NSInteger)source
+                                   data:(NSData*)data
+                     temporarySavedFile:(id)temporarySavedFile {
+    if ([BHTSettings boolForKey:@"hide_promoted"] && data &&
+        IsImmersiveTimelineURL(request.URL)) {
+        id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+        BOOL removed = NO;
+        id filtered = json ? RemovePromotedEntries(json, &removed) : nil;
+        if (removed) {
+            data = [NSJSONSerialization dataWithJSONObject:filtered options:0 error:nil]
+                       ?: data;
+        }
+    }
+
+    return %orig(request, response, source, data, temporarySavedFile);
+}
+
+%end
