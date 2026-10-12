@@ -1167,6 +1167,41 @@ static NSDictionary* cachedWebSessionForAccount(id account) {
 
 // MARK: - Hooks
 
+static void nfb_seedCookieLoginConfiguration(id webViewController, id configuration, id result) {
+    id account = [webViewController respondsToSelector:@selector(account)]
+                     ? [webViewController account]
+                     : nil;
+    NSDictionary* session = objc_getAssociatedObject(webViewController, WebViewSessionCookiesKey);
+    if (!session) {
+        session = cachedWebSessionForAccount(account);
+    }
+
+    WKWebViewConfiguration* config =
+        [result isKindOfClass:[WKWebViewConfiguration class]] ? result : configuration;
+    if (!session || ![config isKindOfClass:[WKWebViewConfiguration class]]) {
+        return;
+    }
+    if (objc_getAssociatedObject(config.websiteDataStore, WebStoreCookieLoginKey)) {
+        return;
+    }
+
+    WKWebsiteDataStore* store = [WKWebsiteDataStore nonPersistentDataStore];
+    config.websiteDataStore = store;
+
+    objc_setAssociatedObject(store, WebStoreCookieLoginKey, @YES, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(store, WebStorePendingLoadKey, [NSMutableArray array],
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    seedWebSessionCookies(store.httpCookieStore, session, ^{
+        NSArray* pending = objc_getAssociatedObject(store, WebStorePendingLoadKey);
+        objc_setAssociatedObject(store, WebStorePendingLoadKey, nil,
+                                 OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        void (^load)(void) = pending.lastObject;
+        if (load) {
+            load();
+        }
+    });
+}
+
 %hook T1WebViewController
 - (id)initWithRootURL:(NSURL*)rootURL
                       account:(id)account
@@ -1209,37 +1244,18 @@ static NSDictionary* cachedWebSessionForAccount(id account) {
 // Called from -loadView with the configuration the webview is about to be created with.
 - (id)updateConfiguration:(id)configuration {
     id result = %orig;
-
-    id account = [self respondsToSelector:@selector(account)] ? [self account] : nil;
-    NSDictionary* session = objc_getAssociatedObject(self, WebViewSessionCookiesKey);
-    if (!session) {
-        session = cachedWebSessionForAccount(account);
-    }
-
-    WKWebViewConfiguration* config =
-        [result isKindOfClass:[WKWebViewConfiguration class]] ? result : configuration;
-    if (!session || ![config isKindOfClass:[WKWebViewConfiguration class]]) {
-        return result;
-    }
-
-    WKWebsiteDataStore* store = [WKWebsiteDataStore nonPersistentDataStore];
-    config.websiteDataStore = store;
-
-    objc_setAssociatedObject(store, WebStoreCookieLoginKey, @YES, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    objc_setAssociatedObject(store, WebStorePendingLoadKey, [NSMutableArray array],
-                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    seedWebSessionCookies(store.httpCookieStore, session, ^{
-        NSArray* pending = objc_getAssociatedObject(store, WebStorePendingLoadKey);
-        objc_setAssociatedObject(store, WebStorePendingLoadKey, nil,
-                                 OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        void (^load)(void) = pending.lastObject;
-        if (load) {
-            load();
-        }
-    });
+    nfb_seedCookieLoginConfiguration(self, configuration, result);
     return result;
 }
 
+%end
+
+%hook _TtC14T1TwitterSwift26PreloadedWebviewController
+- (id)updateConfiguration:(id)configuration {
+    id result = %orig;
+    nfb_seedCookieLoginConfiguration(self, configuration, result);
+    return result;
+}
 %end
 
 static NSURLRequest* unwrapAuthBridgeRequest(NSURLRequest* request) {
