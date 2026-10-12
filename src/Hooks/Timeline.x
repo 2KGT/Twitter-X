@@ -164,6 +164,14 @@ static BOOL ItemIsRetweetOfBlockingUser(id viewModel) {
         ((id (*)(id, SEL))objc_msgSend)(viewModel, authorSelector));
 }
 
+static BOOL ItemIsQuoteTweet(id viewModel) {
+    return ItemRespondsAndInvokesBOOL(viewModel, @selector(isQuoteStatus));
+}
+
+static BOOL ItemIsRetweet(id viewModel) {
+    return ItemRespondsAndInvokesBOOL(viewModel, @selector(isRetweet));
+}
+
 // Everything the per-item filters need to know about one section update: which
 // hide toggles are on, which screen the timeline is being shown on, and the
 // conversation lookups those two imply. Adding a filter or a surface means
@@ -178,6 +186,8 @@ static BOOL ItemIsRetweetOfBlockingUser(id viewModel) {
 @property (nonatomic) BOOL hideWhoToFollow;
 @property (nonatomic) BOOL hidePrompts;
 @property (nonatomic) BOOL hideVerified;
+@property (nonatomic) BOOL hideQuoteTweets;
+@property (nonatomic) BOOL hideRetweets;
 @property (nonatomic) BOOL hideBlockedRetweets;
 
 // Surfaces.
@@ -276,6 +286,15 @@ static BOOL ShouldHideTimelineItem(id item, BHTimelineFilterContext* context) {
 
     if (context.hideWhoToFollow && context.inProfile &&
         [className isEqualToString:@"T1TwitterSwift.URTTimelineCarouselViewModel"]) {
+        return YES;
+    }
+
+    if (!context.inProfile && context.hideQuoteTweets && ItemIsQuoteTweet(viewModel) &&
+        !ItemIsReplyWithSocialContext(viewModel)) {
+        return YES;
+    }
+
+    if (!context.inProfile && context.hideRetweets && ItemIsRetweet(viewModel)) {
         return YES;
     }
 
@@ -404,16 +423,17 @@ static NSSet<NSNumber*>* ConversationAuthorRepliedToUserIDs(NSArray* sections,
     context.hideVerified = [BHTSettings boolForKey:@"hide_verified_tweets"] &&
                            !context.inProfile && !context.inSearch && !context.inEditHistory;
     context.hideBlockedRetweets = [BHTSettings boolForKey:@"hide_blocked_retweets"];
+    BOOL inPostInteractions =
+        IsInHierarchyOfClass(dataViewController, @"T1PostInteractionsViewController");
+    context.hideQuoteTweets = [BHTSettings boolForKey:@"hide_quote_tweets"] && !inPostInteractions;
+    context.hideRetweets = [BHTSettings boolForKey:@"hide_retweets"] && !inPostInteractions;
 
     return context;
 }
 
 - (BOOL)shouldFilter {
-    // inProfile and inSearch only ever relax other rules, so neither is reason
-    // enough on its own; inConversation is, because related-tweet modules are
-    // dropped in a conversation whatever the toggles say.
     return self.hideWhoToFollow || self.hidePrompts || self.hideVerified ||
-           self.hideBlockedRetweets || self.inConversation;
+           self.hideQuoteTweets || self.hideRetweets || self.hideBlockedRetweets || self.inConversation;
 }
 
 - (void)resolveConversationLookupsInSections:(NSArray*)sections {
@@ -438,6 +458,8 @@ static NSSet<NSNumber*>* ConversationAuthorRepliedToUserIDs(NSArray* sections,
            self.hideBlockedRetweets == other.hideBlockedRetweets &&
            self.inConversation == other.inConversation && self.inProfile == other.inProfile &&
            self.inSearch == other.inSearch &&
+           self.hideQuoteTweets == other.hideQuoteTweets &&
+            self.hideRetweets == other.hideRetweets &&
            self.conversationRootUserID == other.conversationRootUserID &&
            self.inEditHistory == other.inEditHistory &&
            (self.authorRepliedToUserIDs == other.authorRepliedToUserIDs ||

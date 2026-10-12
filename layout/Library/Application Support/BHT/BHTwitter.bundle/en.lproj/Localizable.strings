@@ -348,6 +348,12 @@
 "DIM_THEME_RESTART_ALERT_MESSAGE" = "The dim theme requires a restart to take effect.";
 "DIM_THEME_RESTART_ALERT_RESTART_BUTTON" = "Restart";
 
+"HIDE_QUOTE_TWEETS_TITLE" = "Hide quote Tweets";
+"HIDE_QUOTE_TWEETS_DETAIL" = "Hides quote Tweets in your timeline.";
+
+"HIDE_RETWEETS_TITLE" = "Hide retweets";
+"HIDE_RETWEETS_DETAIL" = "Hides retweets in your timeline.";
+
 "HIDE_VERIFIED_TWEETS_TITLE" = "Hide verified Tweets";
 "HIDE_VERIFIED_TWEETS_DETAIL" = "Hides Tweets from verified accounts in your timeline and replies, unless the author has replied to them in the same thread or you follow the account.";
 
