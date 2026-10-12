@@ -3,10 +3,6 @@
 //
 // Swaps the GIF picker's GIPHY-backed catalogue for Tenor's.
 //
-// The picker lives in XKotlin.framework, not in the native app: a Kotlin
-// `GifPickerRepoImpl` runs three Apollo persisted queries against
-// api.x.com/graphql/<queryId>/… and hands the Swift T1GifPickerViewController
-// plain `GifMedia(id, originalUrl, thumbnailUrl, width, height)` values.
 
 #import "HookHelpers.h"
 
@@ -26,8 +22,6 @@ static NSString* const GifSliceTypename = @"GifSlice";
 static NSString* const GifCategoryTypename = @"GifCategory";
 static NSString* const GifCategorySliceTypename = @"GifCategorySlice";
 
-// Marks a request we've already decided to pass through, so re-entering the
-// protocol on the fallback path can't loop.
 static NSString* const TenorPassThroughKey = @"BHTTenorPassThrough";
 
 // The three operations the GIF picker issues, identified by the trailing path
@@ -117,9 +111,7 @@ static NSURL* tenorURL(NSString* path, NSDictionary<NSString*, NSString*>* extra
     return components.URL;
 }
 
-// `getTrendingGifs` and `getMediaForCategory` share one X operation, distinguished by
-// the category name, so "trending" routes to Tenor's trending feed and every other
-// category becomes a search for that term.
+
 static NSURL* tenorURLForOperation(BHTGifOperation operation, NSDictionary* variables) {
     NSString* limit = [@(TenorResultLimit) stringValue];
 
@@ -275,7 +267,7 @@ static NSData* gifSlicePayload(NSString* sliceKey, NSDictionary* tenorJSON,
         }
     }
 
-    // An empty grid is worse than X's own results, so let the request through.
+    // Fallback to GIPHY
     if (items.count == 0) {
         return nil;
     }

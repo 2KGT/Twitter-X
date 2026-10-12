@@ -809,6 +809,7 @@ static __thread BOOL DashPanelIDQuery = NO;
 
 %hook T1TabbedAppNavigationViewController
 
+// +[T1PanelIdentity iconImageNameForPanelID:] has the panel IDs
 - (NSArray*)visiblePanelIDsForAppNavigation:(id)appNavigation {
     NSArray* panelIDs = %orig;
     if (!DashPanelIDQuery) {
@@ -835,6 +836,7 @@ static __thread BOOL DashPanelIDQuery = NO;
     if (!AccountIsGenuinelyPremium()) {
         claim(@15);
     }
+    claim(@17); // Money
     claim(@20); // News
 
     return spoofed;

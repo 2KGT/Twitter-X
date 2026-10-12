@@ -309,11 +309,30 @@ static NSString* CleanedShareURLString(NSString* urlString) {
 }
 %end
 
-%hook T1ViewControllerScribeEventObserver
-- (void)viewControllerApplicationDidBecomeActive:(id)active {
-    if ([BHTSettings boolForKey:@"no_focus_lost"]) {
-        return;
+
+// MARK: Hide the refresh pill at the top of the page that appears when new tweets are available
+%hook TFNPillControl
+- (void)didMoveToWindow {
+    %orig;
+
+    if ([BHTSettings boolForKey:@"hide_timeline_prompts"]) {
+        self.userInteractionEnabled = NO;
+        self.hidden = YES;
+        self.alpha = 0.0;
     }
-    %orig(active);
 }
+
+%end
+
+%hook TFNFloatingActionButton
+- (void)didMoveToWindow {
+    %orig;
+
+    if ([BHTSettings boolForKey:@"hide_tweet_button"]) {
+        self.userInteractionEnabled = NO;
+        self.hidden = YES;
+        self.alpha = 0.0;
+    }
+}
+
 %end
