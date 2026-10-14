@@ -7,6 +7,7 @@
 
 #import "Settings/Pages/TweetsSettingsViewController.h"
 #import <AVFoundation/AVFoundation.h>
+#import <dlfcn.h>
 #import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 #import "Core/BHTBundle.h"
 #import "Core/BHTSettings.h"
@@ -48,6 +49,15 @@ static NSString* const kCustomSendSoundNameKey = @"custom_send_sound_name";
                                             forIndexPath:indexPath];
         NSString* title = [[BHTBundle sharedBundle] localizedStringForKey:settingData[@"titleKey"]];
         [cell configureWithTitle:title subtitle:[self undoTimeoutSubtitle]];
+        return cell;
+    }
+    if ([settingData[@"key"] isEqualToString:@"default_reply_sort"]) {
+        ModernSettingsCompactButtonCell* cell =
+            [tableView dequeueReusableCellWithIdentifier:@"CompactButtonCell"
+                                            forIndexPath:indexPath];
+        NSString* title = [[BHTBundle sharedBundle] localizedStringForKey:settingData[@"titleKey"]];
+        NSInteger sort = [BHTSettings integerForKey:@"default_reply_sort"];
+        [cell configureWithTitle:title subtitle:[self labelForReplySort:sort]];
         return cell;
     }
     return [super tableView:tableView cellForRowAtIndexPath:indexPath];
@@ -169,6 +179,50 @@ static NSString* const kCustomSendSoundNameKey = @"custom_send_sound_name";
                                                     [[NSUserDefaults standardUserDefaults]
                                                         setInteger:seconds.integerValue
                                                             forKey:@"undo_tweet_timeout"];
+                                                    [self.tableView reloadData];
+                                                }]];
+    }
+
+    [alert addAction:[UIAlertAction
+                         actionWithTitle:[[BHTBundle sharedBundle]
+                                             localizedStringForKey:@"CANCEL_ACTION_LABEL"]
+                                   style:UIAlertActionStyleCancel
+                                 handler:nil]];
+
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (NSString*)labelForReplySort:(NSInteger)sort {
+    static const char* const symbols[] = {
+        NULL,
+        "TFSLocalizable_TIMELINE_SORT_REPLIES_BY_RELEVANT",
+        "TFSLocalizable_TIMELINE_SORT_REPLIES_BY_RECENT",
+        "TFSLocalizable_TIMELINE_SORT_REPLIES_BY_LIKED",
+    };
+    static NSString* const fallbacks[] = {nil, @"Relevance", @"Recency", @"Likes"};
+    if (sort <= 0 || sort > 3) {
+        return [[BHTBundle sharedBundle] localizedStringForKey:@"GENERIC_OFF_LABEL"];
+    }
+    NSString* (*localized)(void) = dlsym(RTLD_DEFAULT, symbols[sort]);
+    NSString* label = localized ? localized() : nil;
+    return label.length > 0 ? label : fallbacks[sort];
+}
+
+- (void)showReplySortPicker:(NSDictionary*)sender {
+    UIAlertController* alert = [UIAlertController
+        alertControllerWithTitle:[[BHTBundle sharedBundle]
+                                     localizedStringForKey:@"DEFAULT_REPLY_SORTING_TITLE"]
+                         message:[[BHTBundle sharedBundle]
+                                     localizedStringForKey:@"DEFAULT_REPLY_SORTING_DETAIL"]
+                  preferredStyle:UIAlertControllerStyleAlert];
+
+    for (NSInteger sort = 0; sort <= 3; sort++) {
+        [alert addAction:[UIAlertAction actionWithTitle:[self labelForReplySort:sort]
+                                                  style:UIAlertActionStyleDefault
+                                                handler:^(UIAlertAction* action) {
+                                                    [[NSUserDefaults standardUserDefaults]
+                                                        setInteger:sort
+                                                            forKey:@"default_reply_sort"];
                                                     [self.tableView reloadData];
                                                 }]];
     }

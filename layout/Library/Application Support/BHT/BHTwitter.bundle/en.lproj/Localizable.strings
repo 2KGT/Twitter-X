@@ -149,8 +149,11 @@
 "SQUARE_AVATARS_TITLE" = "Square profile pictures";
 "SQUARE_AVATARS_DETAIL" = "Gives everyone square profile pictures like brand accounts, just like old Twitter.";
 
+"DEFAULT_REPLY_SORTING_TITLE" = "Default reply sorting";
+"DEFAULT_REPLY_SORTING_DETAIL" = "Choose the default reply sorting for all Tweets.";
+
 "REPLY_SORTING_TITLE" = "No reply sorting";
-"REPLY_SORTING_DETAIL" = "Disable the reply sorting feature in tweet conversations.";
+"REPLY_SORTING_DETAIL" = "Hide the reply sorting button in tweet conversations.";
 
 "RESTORE_REPLY_CONTEXT_TITLE" = "Restore reply context";
 "RESTORE_REPLY_CONTEXT_DETAIL" = "Shows the people that are being replied to under Tweets.";

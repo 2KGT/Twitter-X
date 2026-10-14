@@ -50,3 +50,9 @@
 @interface NSNumber (TFSTwitter)
 - (NSString*)tfs_twitterAbbreviated;
 @end
+
+@interface TFSReplySortingState : NSObject
+- (void)sortByRelevance;
+- (void)sortByRecency;
+- (void)sortByLikes;
+@end

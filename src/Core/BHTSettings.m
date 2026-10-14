@@ -358,6 +358,13 @@ static NSDictionary<NSString*, NSDictionary*>* BHTSettingsPages(void) {
                       @"default": @NO,
                       @"type": @"toggle"},
                     @{
+                        @"type": @"compactButton",
+                        @"key": @"default_reply_sort",
+                        @"default": @0,
+                        @"titleKey": @"DEFAULT_REPLY_SORTING_TITLE",
+                        @"action": @"showReplySortPicker:"
+                    },
+                    @{
                         @"key": @"restore_reply_context",
                         @"default": @YES,
                         @"type": @"toggle"
