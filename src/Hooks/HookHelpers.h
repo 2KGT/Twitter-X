@@ -72,3 +72,6 @@ BOOL isCookieLoginUserID(NSString* userID);
 // Current web-session credentials (auth_token + ct0) for read-only web GraphQL
 // requests such as restoring tweet source labels (WebCreateTweet.x)
 NSDictionary* currentWebCredentials(void);
+
+// Restored tweet source labels, keyed by tweet ID (SourceLabels.x)
+extern NSMutableDictionary* tweetSources;
