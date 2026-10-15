@@ -58,6 +58,57 @@ static id performShared(id target, SEL selector) {
 
 static NSString* stringOrEmpty(NSString* value) { return value ?: @""; }
 
+static BOOL getAccountUserID(id account, long long* userID) {
+    if (!account || !userID || ![account respondsToSelector:@selector(userID)]) {
+        return NO;
+    }
+
+    Method method = class_getInstanceMethod([account class], @selector(userID));
+    const char* returnType = method ? method_copyReturnType(method) : NULL;
+    BOOL isObject = returnType && returnType[0] == '@';
+    long long value = 0;
+    if (isObject) {
+        id objectValue = ((id (*)(id, SEL))objc_msgSend)(account, @selector(userID));
+        if ([objectValue respondsToSelector:@selector(longLongValue)]) {
+            value = [objectValue longLongValue];
+        } else {
+            if (returnType) free((void*)returnType);
+            return NO;
+        }
+    } else if (returnType && (returnType[0] == 'q' || returnType[0] == 'Q' ||
+                              returnType[0] == 'l' || returnType[0] == 'L')) {
+        value = ((long long (*)(id, SEL))objc_msgSend)(account, @selector(userID));
+    } else {
+        if (returnType) free((void*)returnType);
+        return NO;
+    }
+    if (returnType) free((void*)returnType);
+    *userID = value;
+    return YES;
+}
+
+static id accountWithUsernameAndUserID(Class accountClass, NSString* username,
+                                       long long userID) {
+    SEL selector = @selector(initWithUsername:userID:);
+    Method method = class_getInstanceMethod(accountClass, selector);
+    if (!method) {
+        return nil;
+    }
+
+    const char* argumentType = method_copyArgumentType(method, 3);
+    id account = nil;
+    if (argumentType && argumentType[0] == '@') {
+        account = ((id (*)(id, SEL, id, id))objc_msgSend)(
+            [accountClass alloc], selector, username, @(userID));
+    } else if (argumentType && (argumentType[0] == 'q' || argumentType[0] == 'Q' ||
+                                argumentType[0] == 'l' || argumentType[0] == 'L')) {
+        account = ((id (*)(id, SEL, id, long long))objc_msgSend)(
+            [accountClass alloc], selector, username, userID);
+    }
+    if (argumentType) free((void*)argumentType);
+    return account;
+}
+
 @interface WebLoginViewController () <WKNavigationDelegate>
 @property (nonatomic, strong) WKWebView* webView;
 @property (nonatomic, strong) NSTimer* pollTimer;
@@ -302,8 +353,7 @@ static NSString* stringOrEmpty(NSString* value) { return value ?: @""; }
         return existing;
     }
 
-    id account = ((id (*)(id, SEL, id, long long))objc_msgSend)(
-        [accountCls alloc], @selector(initWithUsername:userID:), username ?: @"", uid);
+    id account = accountWithUsernameAndUserID(accountCls, username ?: @"", uid);
     if (!account) {
         return nil;
     }
@@ -333,8 +383,8 @@ static NSString* stringOrEmpty(NSString* value) { return value ?: @""; }
         id accounts = performShared(shared, @selector(accounts));
         if ([accounts isKindOfClass:[NSArray class]]) {
             for (id acct in accounts) {
-                if ([acct respondsToSelector:@selector(userID)] &&
-                    ((long long (*)(id, SEL))objc_msgSend)(acct, @selector(userID)) == uid) {
+                long long accountUserID = 0;
+                if (getAccountUserID(acct, &accountUserID) && accountUserID == uid) {
                     return acct;
                 }
             }
