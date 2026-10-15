@@ -182,6 +182,8 @@
         }
         NSString* iconName = toggleData[@"icon"];
         [cell configureWithTitle:title subtitle:subtitle iconName:iconName];
+        cell.lastInSection =
+            indexPath.row == [tableView numberOfRowsInSection:indexPath.section] - 1;
         return cell;
     } else {
         ModernSettingsToggleCell* cell = [tableView dequeueReusableCellWithIdentifier:@"ToggleCell"

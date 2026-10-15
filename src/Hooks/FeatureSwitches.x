@@ -192,6 +192,10 @@ static NSNumber* FeatureSwitchOverrideValueForKey(NSString* key) {
         return @NO;
     }
 
+    if ([key isEqualToString:@"ios_settings_redesign_enabled"]) {
+        return @YES;
+    }
+
     // Profile tabs
     if ([key isEqualToString:@"articles_timeline_profile_tab_enabled"]) {
         return @(![BHTSettings boolForKey:@"disable_articles"]);

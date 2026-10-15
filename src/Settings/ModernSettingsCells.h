@@ -13,6 +13,7 @@
 @property (nonatomic, strong) UILabel* titleLabel;
 @property (nonatomic, strong) UILabel* subtitleLabel;
 @property (nonatomic, strong) UIImageView* chevronImageView;
+@property (nonatomic, assign) BOOL lastInSection;
 - (void)configureWithTitle:(NSString*)title
                   subtitle:(NSString*)subtitle
                   iconName:(NSString*)iconName;

@@ -10,6 +10,20 @@
 #import "Headers/TWHeaders.h"
 #import "ThemeColor/Palette.h"
 
+// Copied values from the main settings, yeah I'm lazy.
+static const CGFloat ListRowInset = 24;
+static const CGFloat ListRowGlyphSize = 24;
+static const CGFloat ListRowTextGap = 16;
+static const CGFloat ListRowPadding = 10;
+static const CGFloat ListRowSpacing = 8;
+
+@interface ModernSettingsTableViewCell ()
+@property (nonatomic, strong) UIStackView* textStack;
+@property (nonatomic, strong) NSLayoutConstraint* textLeadingToIcon;
+@property (nonatomic, strong) NSLayoutConstraint* textLeadingToEdge;
+@property (nonatomic, strong) NSLayoutConstraint* textBottom;
+@end
+
 @implementation ModernSettingsTableViewCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style
@@ -26,22 +40,26 @@
     self.iconImageView = [[UIImageView alloc] init];
     self.iconImageView.translatesAutoresizingMaskIntoConstraints = NO;
     self.iconImageView.contentMode = UIViewContentModeScaleAspectFit;
-    self.iconImageView.tintColor = [UIColor secondaryLabelColor];
     [self.contentView addSubview:self.iconImageView];
 
-    self.titleLabel = [[UILabel alloc] init];
-    self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     id fontGroup = [BHTManager sharedFontGroup];
-    self.titleLabel.font = [fontGroup performSelector:@selector(bodyBoldFont)];
+
+    self.titleLabel = [[UILabel alloc] init];
+    self.titleLabel.font = [fontGroup performSelector:@selector(bodyFont)];
     self.titleLabel.textColor = [UIColor labelColor];
-    [self.contentView addSubview:self.titleLabel];
+    self.titleLabel.numberOfLines = 0;
 
     self.subtitleLabel = [[UILabel alloc] init];
-    self.subtitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     self.subtitleLabel.font = [fontGroup performSelector:@selector(subtext2Font)];
-    [self updateSubtitleColor];
     self.subtitleLabel.numberOfLines = 0;
-    [self.contentView addSubview:self.subtitleLabel];
+    [self updateSubtitleColor];
+
+    self.textStack =
+        [[UIStackView alloc] initWithArrangedSubviews:@[self.titleLabel, self.subtitleLabel]];
+    self.textStack.translatesAutoresizingMaskIntoConstraints = NO;
+    self.textStack.axis = UILayoutConstraintAxisVertical;
+    self.textStack.spacing = 4;
+    [self.contentView addSubview:self.textStack];
 
     self.chevronImageView = [[UIImageView alloc] init];
     self.chevronImageView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -53,33 +71,43 @@
 }
 
 - (void)setupConstraints {
+    UIView* content = self.contentView;
+
+    self.textLeadingToIcon =
+        [self.textStack.leadingAnchor constraintEqualToAnchor:self.iconImageView.trailingAnchor
+                                                     constant:ListRowTextGap];
+    self.textLeadingToEdge = [self.textStack.leadingAnchor constraintEqualToAnchor:content.leadingAnchor
+                                                                          constant:ListRowInset];
+    self.textBottom = [self.textStack.bottomAnchor constraintEqualToAnchor:content.bottomAnchor
+                                                                  constant:-ListRowPadding];
+
     [NSLayoutConstraint activateConstraints:@[
-        [self.iconImageView.leadingAnchor constraintEqualToAnchor:self.contentView.leadingAnchor
-                                                         constant:20],
-        [self.iconImageView.centerYAnchor constraintEqualToAnchor:self.contentView.centerYAnchor],
-        [self.iconImageView.widthAnchor constraintEqualToConstant:20],
-        [self.iconImageView.heightAnchor constraintEqualToConstant:20],
+        [self.iconImageView.leadingAnchor constraintEqualToAnchor:content.leadingAnchor
+                                                         constant:ListRowInset],
+        [self.iconImageView.topAnchor constraintEqualToAnchor:content.topAnchor
+                                                     constant:ListRowPadding],
+        [self.iconImageView.widthAnchor constraintEqualToConstant:ListRowGlyphSize],
+        [self.iconImageView.heightAnchor constraintEqualToConstant:ListRowGlyphSize],
 
-        [self.titleLabel.leadingAnchor constraintEqualToAnchor:self.iconImageView.trailingAnchor
-                                                      constant:16],
-        [self.titleLabel.topAnchor constraintEqualToAnchor:self.contentView.topAnchor
-                                                  constant:16],
-        [self.titleLabel.trailingAnchor constraintEqualToAnchor:self.chevronImageView.leadingAnchor
-                                                       constant:-16],
+        self.textLeadingToIcon,
+        [self.textStack.topAnchor constraintEqualToAnchor:content.topAnchor constant:ListRowPadding],
+        [self.textStack.trailingAnchor constraintEqualToAnchor:self.chevronImageView.leadingAnchor
+                                                      constant:-ListRowTextGap],
+        self.textBottom,
+        // Keeps a single-line row as tall as its icon.
+        [self.textStack.heightAnchor constraintGreaterThanOrEqualToConstant:ListRowGlyphSize],
 
-        [self.subtitleLabel.leadingAnchor constraintEqualToAnchor:self.titleLabel.leadingAnchor],
-        [self.subtitleLabel.topAnchor constraintEqualToAnchor:self.titleLabel.bottomAnchor
-                                                     constant:2],
-        [self.subtitleLabel.trailingAnchor constraintEqualToAnchor:self.titleLabel.trailingAnchor],
-        [self.subtitleLabel.bottomAnchor constraintEqualToAnchor:self.contentView.bottomAnchor
-                                                        constant:-16],
-
-        [self.chevronImageView.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor
-                                                             constant:-20],
-        [self.chevronImageView.centerYAnchor constraintEqualToAnchor:self.contentView.centerYAnchor],
-        [self.chevronImageView.widthAnchor constraintEqualToConstant:18],
-        [self.chevronImageView.heightAnchor constraintEqualToConstant:18]
+        [self.chevronImageView.trailingAnchor constraintEqualToAnchor:content.trailingAnchor
+                                                             constant:-ListRowInset],
+        [self.chevronImageView.centerYAnchor constraintEqualToAnchor:self.textStack.centerYAnchor],
+        [self.chevronImageView.widthAnchor constraintEqualToConstant:ListRowGlyphSize],
+        [self.chevronImageView.heightAnchor constraintEqualToConstant:ListRowGlyphSize]
     ]];
+}
+
+- (void)setLastInSection:(BOOL)lastInSection {
+    _lastInSection = lastInSection;
+    self.textBottom.constant = -(ListRowPadding + (lastInSection ? 0 : ListRowSpacing));
 }
 
 - (void)configureWithTitle:(NSString*)title
@@ -87,51 +115,45 @@
                   iconName:(NSString*)iconName {
     self.titleLabel.text = title;
     self.subtitleLabel.text = subtitle;
+    self.subtitleLabel.hidden = subtitle.length == 0;
+
+    // Rows without an icon pull their text to the inset, as X's leading .none does.
+    BOOL hasIcon = iconName.length > 0;
+    self.iconImageView.hidden = !hasIcon;
+    self.textLeadingToIcon.active = hasIcon;
+    self.textLeadingToEdge.active = !hasIcon;
+
     objc_setAssociatedObject(self, @selector(iconName), iconName, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     [self updateIconColors];
 }
 
 // Vector images bake in their fill color, so they are re-rendered on every theme change.
 - (void)updateIconColors {
+    UIColor* glyphColor = [[UIColor labelColor] resolvedColorWithTraitCollection:self.traitCollection];
+    CGSize glyphSize = CGSizeMake(ListRowGlyphSize, ListRowGlyphSize);
+
     NSString* iconName = objc_getAssociatedObject(self, @selector(iconName));
-    if (iconName) {
-        Class TAEColorSettingsCls = objc_getClass("TAEColorSettings");
-        id settings = [TAEColorSettingsCls sharedSettings];
-        id currentPalette = [settings currentColorPalette];
-        id colorPalette = [currentPalette colorPalette];
-        UIColor* iconColor = [colorPalette performSelector:@selector(tabBarItemColor)];
-        self.iconImageView.image = [UIImage tfn_vectorImageNamed:iconName
-                                                        fitsSize:CGSizeMake(20, 20)
-                                                       fillColor:iconColor];
-    }
-    Class TAEColorSettingsCls = objc_getClass("TAEColorSettings");
-    id settings = [TAEColorSettingsCls sharedSettings];
-    id currentPalette = [settings currentColorPalette];
-    id colorPalette = [currentPalette colorPalette];
-    UIColor* chevronColor = [colorPalette performSelector:@selector(tabBarItemColor)];
+    self.iconImageView.image =
+        iconName ? [UIImage tfn_vectorImageNamed:iconName fitsSize:glyphSize fillColor:glyphColor]
+                 : nil;
     self.chevronImageView.image = [UIImage tfn_vectorImageNamed:@"chevron_right"
-                                                       fitsSize:CGSizeMake(18, 18)
-                                                      fillColor:chevronColor];
+                                                       fitsSize:glyphSize
+                                                      fillColor:glyphColor];
 }
 
+// X tints secondary row text as the primary label colour at 60% opacity.
 - (void)updateSubtitleColor {
-    Class TAEColorSettingsCls = objc_getClass("TAEColorSettings");
-    id settings = [TAEColorSettingsCls sharedSettings];
-    id currentPalette = [settings currentColorPalette];
-    id colorPalette = [currentPalette colorPalette];
-    UIColor* subtitleColor = [colorPalette performSelector:@selector(tabBarItemColor)];
-    self.subtitleLabel.textColor = subtitleColor;
+    self.subtitleLabel.textColor = [[UIColor labelColor] colorWithAlphaComponent:0.6];
 }
 
 - (void)traitCollectionDidChange:(UITraitCollection*)previousTraitCollection {
     [super traitCollectionDidChange:previousTraitCollection];
     self.backgroundColor = [Palette currentBackgroundColor];
     [self updateIconColors];
-    [self updateSubtitleColor];
     if (previousTraitCollection.preferredContentSizeCategory !=
         self.traitCollection.preferredContentSizeCategory) {
         id fontGroup = [BHTManager sharedFontGroup];
-        self.titleLabel.font = [fontGroup performSelector:@selector(bodyBoldFont)];
+        self.titleLabel.font = [fontGroup performSelector:@selector(bodyFont)];
         self.subtitleLabel.font = [fontGroup performSelector:@selector(subtext2Font)];
     }
 }

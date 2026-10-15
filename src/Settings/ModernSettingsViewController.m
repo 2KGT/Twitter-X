@@ -503,6 +503,8 @@
         [cell configureWithTitle:sectionData[@"title"]
                         subtitle:sectionData[@"subtitle"]
                         iconName:sectionData[@"icon"]];
+        cell.lastInSection =
+            indexPath.row == [tableView numberOfRowsInSection:indexPath.section] - 1;
         return cell;
     } else if (indexPath.section == 1) {
         return [self developerCellForTableView:tableView

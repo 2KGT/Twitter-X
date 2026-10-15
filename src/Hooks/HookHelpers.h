@@ -49,6 +49,9 @@ void applySelectedThemeColor(void);
 // Dim recolor for the Swift-drawn immersive video controls (Theme.x)
 void BHTApplyDimToVideoControls(UIView* controlsView);
 
+// Long press on the home navigation bar opens NeoFreeBird settings (Settings.x)
+void attachNeoFreeBirdSettingsGesture(UIViewController* home);
+
 // Live pinned-tabs refresh when the hide setting is toggled (Timeline.x)
 void applyHideCustomTimelinesSetting(void);
 

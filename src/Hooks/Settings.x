@@ -148,6 +148,92 @@ static NSArray* sectionsWithNeoFreeBirdEntry(TFNItemsDataViewController* setting
 }
 %end
 
+// MARK: - NeoFreeBird settings gesture
+
+@interface NFBSettingsGesture : NSObject <UIGestureRecognizerDelegate>
+@property (nonatomic, weak) UIViewController* home;
+@end
+
+@implementation NFBSettingsGesture
+
+- (BOOL)homeIsVisible {
+    UIViewController* home = self.home;
+    UINavigationController* nav = home.navigationController;
+    if (!home.viewIfLoaded.window || !nav) {
+        return NO;
+    }
+
+    UIViewController* top = nav.topViewController;
+    for (UIViewController* vc = home; vc; vc = vc.parentViewController) {
+        if (vc == top) {
+            return YES;
+        }
+    }
+
+    return NO;
+}
+
+- (void)handleLongPress:(UILongPressGestureRecognizer*)press {
+    if (press.state != UIGestureRecognizerStateBegan || ![self homeIsVisible]) {
+        return;
+    }
+
+    UIImpactFeedbackGenerator* haptic =
+        [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleMedium];
+    [haptic impactOccurred];
+
+    id account = nil;
+    Class hostClass = objc_getClass("T1HostViewController");
+    if ([hostClass respondsToSelector:@selector(sharedHostViewController)]) {
+        id host = [hostClass sharedHostViewController];
+        if ([host respondsToSelector:@selector(currentAccount)]) {
+            account = [host currentAccount];
+        }
+    }
+
+    [self.home.navigationController pushViewController:[BHTManager BHTSettingsWithAccount:account]
+                                              animated:YES];
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer*)gestureRecognizer {
+    return [self homeIsVisible];
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer*)gestureRecognizer
+    shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer*)other {
+    return YES;
+}
+
+@end
+
+static const void* SettingsGestureKey = &SettingsGestureKey;
+
+// Code lifted from nyaathea's Twitter tweak (now abandoned)
+void attachNeoFreeBirdSettingsGesture(UIViewController* home) {
+    UINavigationBar* bar = home.navigationController.navigationBar;
+    if (!bar) {
+        return;
+    }
+
+    NFBSettingsGesture* target = objc_getAssociatedObject(bar, SettingsGestureKey);
+    if (target) {
+        target.home = home;
+        return;
+    }
+
+    target = [NFBSettingsGesture new];
+    target.home = home;
+
+    UILongPressGestureRecognizer* press =
+        [[UILongPressGestureRecognizer alloc] initWithTarget:target
+                                                      action:@selector(handleLongPress:)];
+    press.cancelsTouchesInView = NO;
+    press.delegate = target;
+    [bar addGestureRecognizer:press];
+
+    objc_setAssociatedObject(bar, SettingsGestureKey, target, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
 // MARK: - Change font
 
 %hook UIFontPickerViewController
