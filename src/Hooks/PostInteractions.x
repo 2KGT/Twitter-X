@@ -11,11 +11,15 @@ static void BHTSetPostInteractionCounts(UIViewController* controller, TFNTwitter
         return;
     }
     if (![BHTSettings boolForKey:@"show_unrounded_quote_numbers"]) {
-        controller.navigationItem.title = [NSString stringWithFormat:@"Quotes: %@  Retweets: %@",
+        NSString* titleFormat =
+            [[BHTBundle sharedBundle] localizedStringForKey:@"POST_INTERACTIONS_COUNTS_TITLE"];
+        controller.navigationItem.title = [NSString stringWithFormat:titleFormat,
                                             formatNumberWithSuffix(status.quoteCount),
                                             formatNumberWithSuffix(status.retweetCount)];
     } else {
-        controller.navigationItem.title = [NSString stringWithFormat:@"Quotes: %lld  Retweets: %lld",
+        NSString* titleFormat = [[BHTBundle sharedBundle]
+            localizedStringForKey:@"POST_INTERACTIONS_UNROUNDED_COUNTS_TITLE"];
+        controller.navigationItem.title = [NSString stringWithFormat:titleFormat,
                                             status.quoteCount,
                                             status.retweetCount];
     }

@@ -111,6 +111,9 @@
 "SHOW_UNROUNDED_QUOTE_NUMBERS_TITLE" = "Show unrounded quote numbers";
 "SHOW_UNROUNDED_QUOTE_NUMBERS_DETAIL" = "Show the exact number of quotes and retweets a Tweet has received. Can cause overflow issues.";
 
+"POST_INTERACTIONS_COUNTS_TITLE" = "Quotes: %@  Retweets: %@";
+"POST_INTERACTIONS_UNROUNDED_COUNTS_TITLE" = "Quotes: %lld  Retweets: %lld";
+
 "USE_TENOR_GIFS_TITLE" = "Use Tenor GIFs";
 "USE_TENOR_GIFS_DETAIL" = "Use Tenor GIFs instead of Twitter's GIFs (GIPHY). Tenor has more options.";
 
