@@ -118,6 +118,20 @@ static long long ItemRepresentedFromUserID(id viewModel) {
     return ((long long (*)(id, SEL))objc_msgSend)(viewModel, selector);
 }
 
+static long long AdditionalItemRepresentedFromUserID(id viewModel) {
+    SEL selector = @selector(fromUser);
+    if (![viewModel respondsToSelector:selector]) {
+        return 0;
+    }
+
+    // Get the userID NSInteger from the viewModel if the selector exists
+    id fromUser = ((id (*)(id, SEL))objc_msgSend)(viewModel, selector);
+    if (![fromUser respondsToSelector:@selector(userID)]) {
+        return 0;
+    }
+    return ((long long (*)(id, SEL))objc_msgSend)(fromUser, @selector(userID));
+}
+
 static long long ItemInReplyToUserID(id viewModel) {
     SEL selector = @selector(inReplyToUserID);
     if (![viewModel respondsToSelector:selector]) {
@@ -125,6 +139,26 @@ static long long ItemInReplyToUserID(id viewModel) {
     }
 
     return ((long long (*)(id, SEL))objc_msgSend)(viewModel, selector);
+}
+
+static long long CurrentAccountUserID(void) {
+    Class hostClass = objc_getClass("T1HostViewController");
+    if (!hostClass) {
+        return 0;
+    }
+
+    id host = ((id (*)(id, SEL))objc_msgSend)(
+        (id)hostClass, @selector(sharedHostViewController));
+    if (![host respondsToSelector:@selector(currentAccount)]) {
+        return 0;
+    }
+
+    id account = ((id (*)(id, SEL))objc_msgSend)(host, @selector(currentAccount));
+    if (![account respondsToSelector:@selector(userID)]) {
+        return 0;
+    }
+
+    return ((long long (*)(id, SEL))objc_msgSend)(account, @selector(userID));
 }
 
 // Twitter's *ByCurrentAccountState fields are a tri-state (0 unknown, 1 yes,
@@ -165,11 +199,30 @@ static BOOL ItemIsRetweetOfBlockingUser(id viewModel) {
 }
 
 static BOOL ItemIsQuoteTweet(id viewModel) {
-    return ItemRespondsAndInvokesBOOL(viewModel, @selector(isQuoteStatus));
+    if (!ItemRespondsAndInvokesBOOL(viewModel, @selector(isQuoteTweet))) {
+        return NO;
+    }
+
+    long long currentAccountUserID = CurrentAccountUserID();
+    long long representedFromUserID = AdditionalItemRepresentedFromUserID(viewModel);
+    if (currentAccountUserID != 0 && representedFromUserID == currentAccountUserID) {
+        return NO;
+    }
+    return YES;
 }
 
 static BOOL ItemIsRetweet(id viewModel) {
-    return ItemRespondsAndInvokesBOOL(viewModel, @selector(isRetweet));
+    if (!ItemRespondsAndInvokesBOOL(viewModel, @selector(isRetweet))) {
+        return NO;
+    }
+
+    long long currentAccountUserID = CurrentAccountUserID();
+    long long representedFromUserID = AdditionalItemRepresentedFromUserID(viewModel);
+    if (currentAccountUserID != 0 && representedFromUserID == currentAccountUserID) {
+        return NO;
+    }
+
+    return YES;
 }
 
 // Everything the per-item filters need to know about one section update: which
