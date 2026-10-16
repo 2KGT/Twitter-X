@@ -304,9 +304,16 @@
 @interface _TtC14T1TwitterSwift17VideoControlsView : UIView
 @end
 
+@class T1ConversationFooterItem;
+
 @interface T1ConversationFooterTextView : TFNAttributedTextView
+@property (nonatomic, retain) T1ConversationFooterItem* footerItem;
 @property (nonatomic, readonly) id viewModel;
 - (void)updateFooterTextView;
++ (CGSize)sizeForViewModel:(id)model
+                footerItem:(T1ConversationFooterItem*)item
+             maximumWidth:(CGFloat)width
+grokEditImageButtonConfiguration:(id)configuration;
 @end
 
 @interface T1VideoQualityUploadSettings : NSObject

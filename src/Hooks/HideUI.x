@@ -5,6 +5,10 @@
 
 #import "HookHelpers.h"
 
+@interface T1ConversationFooterItem : NSObject
+@property (nonatomic, retain) NSNumber* viewCount;
+@end
+
 // MARK: - Hide Blue verified checkmark
 
 // The author-row badge (SimpleBadgeable.init(statusViewModel:)) builds from the
@@ -184,6 +188,47 @@
         self.messageButton.userInteractionEnabled = NO;
         self.messageButton.alpha = 0.0;
     }
+}
+
+%end
+
+// Hiding views also requires hooking the footer, and X is being weird and making it
+// more complicated than it should be.
+%hook T1ConversationFooterTextView
+
+- (void)updateFooterTextView {
+    if (![BHTSettings boolForKey:@"hide_view_count"]) {
+        %orig;
+        return;
+    }
+
+    T1ConversationFooterItem* footerItem = self.footerItem;
+    NSNumber* viewCount = footerItem.viewCount;
+    footerItem.viewCount = nil;
+    @try {
+        %orig;
+    } @finally {
+        footerItem.viewCount = viewCount;
+    }
+}
+
++ (CGSize)sizeForViewModel:(id)model
+                footerItem:(T1ConversationFooterItem*)footerItem
+             maximumWidth:(CGFloat)width
+grokEditImageButtonConfiguration:(id)configuration {
+    if (![BHTSettings boolForKey:@"hide_view_count"] || !footerItem) {
+        return %orig;
+    }
+
+    NSNumber* viewCount = footerItem.viewCount;
+    footerItem.viewCount = nil;
+    CGSize size;
+    @try {
+        size = %orig;
+    } @finally {
+        footerItem.viewCount = viewCount;
+    }
+    return size;
 }
 
 %end
