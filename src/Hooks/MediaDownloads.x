@@ -310,13 +310,13 @@ static void SetVoiceDownloadLongPressRecognizer(UIView* view,
         if ([fileManager fileExistsAtPath:[recorder_url path]]) {
             [fileManager removeItemAtURL:recorder_url error:&error];
             if (error) {
-                NSLog(@"[BHTwitter] Error removing existing file: %@", error);
+                NSLog(@"[NFB] Error removing existing file: %@", error);
             }
         }
 
         [fileManager copyItemAtURL:videoURL toURL:recorder_url error:&error];
         if (error) {
-            NSLog(@"[BHTwitter] Error copying file: %@", error);
+            NSLog(@"[NFB] Error copying file: %@", error);
         }
     }
 

@@ -1,5 +1,5 @@
 // AppIconItem.h
-// BHTwitter
+// NeoFreeBird
 //
 
 #import <Foundation/Foundation.h>

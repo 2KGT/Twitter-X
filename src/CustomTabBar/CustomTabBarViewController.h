@@ -1,6 +1,6 @@
 //
 //  CustomTabBarViewController.h
-//  BHTwitter
+//  NeoFreeBird
 //
 //  Created by Bandar Alruwaili on 11/12/2023.
 //
