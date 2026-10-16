@@ -14,8 +14,8 @@
       "name": "Twitter",
       "bundleIdentifier": "com.atebits.Tweetie2",
       "developerName": "actuallyaridan, orionblur, nyaathea",
-      "subtitle": "NeoFreeBird version 7.1.1",
-      "localizedDescription": "NeoFreeBird-BHTwitter, changed to look like the app before the rebrand.",
+      "subtitle": "NeoFreeBird version 7.2.0",
+      "localizedDescription": "NeoFreeBird, changed to look like the app before the rebrand.",
       "iconURL": "https://raw.githubusercontent.com/NeoFreeBird/app/v7/resources/icon_rounded.png",
       "tintColor": "#1DA1F2",
       "category": "lifestyle",
@@ -27,6 +27,15 @@
         "https://raw.githubusercontent.com/NeoFreeBird/app/v7/resources/timeline/timeline5.png"
       ],
       "versions": [
+        {
+          "version": "12.33",
+          "buildVersion": "31",
+          "date": "2026-10-16T19:24:04Z",
+          "downloadURL": "https://github.com/NeoFreeBird/app/releases/download/v7.2.0/NeoFreeBird-sideloaded-Twitter_7.2.0_12.33.ipa",
+          "size": 259047406,
+          "minOSVersion": "15.0",
+          "localizedDescription": "New Features\n- Added an option to choose the default reply sort\n- Updated X to 12.33\n- Added an option to hide retweets and quotes from the “For You” page\n- Added option to convert t.co links and remove link tracking\n- Updated NFB settings to use the new settings design. You now hold the bird (or X) on the For You page to access NFB settings\n- Brought back the Tweet source labels!\n- Removed the “Money” tab\n- Enabling the option to hide views now also hides it in the tweet footer.\n\nFixes\n- Fixed more webview issues\n- NeoFreeBird now more reliably filters out video ads\n- Fixed hiding both the “Follow” and “Message” button on tweets\n- Tweaked the wording of the “Reply in web view” option to highlight it’s a fallback\n- Added localization support for the “Show quote numbers option”\n- Fixed the app crashing when adding more than 1 account"
+        },
         {
           "version": "12.31.1",
           "buildVersion": "1",
