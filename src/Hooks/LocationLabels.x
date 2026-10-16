@@ -134,7 +134,6 @@ static NSString* displayableValue(NSString* cached, NSString* unavailable) {
 - (TFNAttributedTextModel*)textModel;
 @end
 
-
 @interface TweetSourceHelper (SourceLabels)
 + (NSString*)unavailableString;
 + (NSString*)labelFromSourceHTML:(NSString*)html;
@@ -480,7 +479,8 @@ static NSString* tweetIDFromStatus(id status) {
         id value = [status performSelector:selector];
         NSString* candidate = [value isKindOfClass:[NSString class]]
                                   ? value
-                                  : [value isKindOfClass:[NSNumber class]] ? [value stringValue] : nil;
+                              : [value isKindOfClass:[NSNumber class]] ? [value stringValue]
+                                                                       : nil;
         NSCharacterSet* nonDigits = [[NSCharacterSet decimalDigitCharacterSet] invertedSet];
         if (candidate.length > 0 &&
             [candidate rangeOfCharacterFromSet:nonDigits].location == NSNotFound) {

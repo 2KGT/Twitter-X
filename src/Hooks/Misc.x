@@ -296,7 +296,6 @@ static NSString* CleanedShareURLString(NSString* urlString) {
 }
 %end
 
-
 // MARK: Hide the refresh pill at the top of the page that appears when new tweets are available
 %hook TFNPillControl
 - (void)didMoveToWindow {

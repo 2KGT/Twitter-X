@@ -20,7 +20,6 @@ enum {
 // default_reply_sort: 0 is unchanged, 1 relevance, 2 recency,
 // 3 likes.
 static BOOL PreferredReplyRankingMode(uint8_t* mode) {
-
     switch ([BHTSettings integerForKey:@"default_reply_sort"]) {
         case 1:
             *mode = BHTReplyRankingModeRelevance;
@@ -77,7 +76,6 @@ static NSInteger userActionDepth;
 }
 
 %end
-
 
 typedef void* (*ReplySortingStateInitFn)(
     uint8_t mode, void* __attribute__((swift_context)) self) __attribute__((swiftcall));

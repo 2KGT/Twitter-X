@@ -111,7 +111,6 @@ static NSURL* tenorURL(NSString* path, NSDictionary<NSString*, NSString*>* extra
     return components.URL;
 }
 
-
 static NSURL* tenorURLForOperation(BHTGifOperation operation, NSDictionary* variables) {
     NSString* limit = [@(TenorResultLimit) stringValue];
 

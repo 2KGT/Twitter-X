@@ -3,10 +3,8 @@
 //  NeoFreeBird
 //
 
-
 #import <string.h>
 #import "HookHelpers.h"
-
 
 // MARK: - Hide custom timelines
 

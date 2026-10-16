@@ -512,7 +512,7 @@ static NSSet<NSNumber*>* ConversationAuthorRepliedToUserIDs(NSArray* sections,
            self.inConversation == other.inConversation && self.inProfile == other.inProfile &&
            self.inSearch == other.inSearch &&
            self.hideQuoteTweets == other.hideQuoteTweets &&
-            self.hideRetweets == other.hideRetweets &&
+           self.hideRetweets == other.hideRetweets &&
            self.conversationRootUserID == other.conversationRootUserID &&
            self.inEditHistory == other.inEditHistory &&
            (self.authorRepliedToUserIDs == other.authorRepliedToUserIDs ||

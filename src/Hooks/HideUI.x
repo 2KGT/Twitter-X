@@ -217,9 +217,9 @@
 }
 
 + (CGSize)sizeForViewModel:(id)model
-                footerItem:(T1ConversationFooterItem*)footerItem
-             maximumWidth:(CGFloat)width
-grokEditImageButtonConfiguration:(id)configuration {
+                          footerItem:(T1ConversationFooterItem*)footerItem
+                        maximumWidth:(CGFloat)width
+    grokEditImageButtonConfiguration:(id)configuration {
     if (![BHTSettings boolForKey:@"hide_view_count"] || !footerItem) {
         return %orig;
     }
@@ -273,8 +273,8 @@ grokEditImageButtonConfiguration:(id)configuration {
 %end
 
 %hook T1StandardStatusAskGrokButtonView
-    
--(void)didMoveToWindow {
+
+- (void)didMoveToWindow {
     %orig;
     if ([BHTSettings boolForKey:@"hide_grok_create"]) {
         self.hidden = YES;

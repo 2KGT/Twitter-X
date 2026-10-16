@@ -26,9 +26,9 @@
 
 @interface T1PostInteractionsViewController : UIViewController
 + (id)viewControllerWithAccount:(TFNTwitterAccount*)account
-                                             statusID:(long long)statusID
-                                         statusUserID:(long long)statusUserID
-                                            initialTab:(long long)initialTab;
+                       statusID:(long long)statusID
+                   statusUserID:(long long)statusUserID
+                     initialTab:(long long)initialTab;
 @end
 
 @interface T1AppDelegate : UIResponder <UIApplicationDelegate>
@@ -74,7 +74,7 @@
 @property (nonatomic, strong) UIButton* uploadButton;
 @end
 
-@interface T1StandardStatusAskGrokButtonView: UIView
+@interface T1StandardStatusAskGrokButtonView : UIView
 @end
 
 @interface T1MediaAttachmentsViewCell () <UINavigationControllerDelegate,
@@ -311,9 +311,9 @@
 @property (nonatomic, readonly) id viewModel;
 - (void)updateFooterTextView;
 + (CGSize)sizeForViewModel:(id)model
-                footerItem:(T1ConversationFooterItem*)item
-             maximumWidth:(CGFloat)width
-grokEditImageButtonConfiguration:(id)configuration;
+                          footerItem:(T1ConversationFooterItem*)item
+                        maximumWidth:(CGFloat)width
+    grokEditImageButtonConfiguration:(id)configuration;
 @end
 
 @interface T1VideoQualityUploadSettings : NSObject

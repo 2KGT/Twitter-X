@@ -90,7 +90,8 @@ static const CGFloat ListRowSpacing = 8;
         [self.iconImageView.heightAnchor constraintEqualToConstant:ListRowGlyphSize],
 
         self.textLeadingToIcon,
-        [self.textStack.topAnchor constraintEqualToAnchor:content.topAnchor constant:ListRowPadding],
+        [self.textStack.topAnchor constraintEqualToAnchor:content.topAnchor
+                                                 constant:ListRowPadding],
         [self.textStack.trailingAnchor constraintEqualToAnchor:self.chevronImageView.leadingAnchor
                                                       constant:-ListRowTextGap],
         self.textBottom,

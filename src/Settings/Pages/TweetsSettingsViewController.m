@@ -7,8 +7,8 @@
 
 #import "Settings/Pages/TweetsSettingsViewController.h"
 #import <AVFoundation/AVFoundation.h>
-#import <dlfcn.h>
 #import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
+#import <dlfcn.h>
 #import "Core/BHTBundle.h"
 #import "Core/BHTSettings.h"
 #import "Headers/TWHeaders.h"
@@ -93,7 +93,7 @@ static NSString* const kCustomSendSoundNameKey = @"custom_send_sound_name";
     BOOL scoped = [url startAccessingSecurityScopedResource];
     NSError* playerError = nil;
     AVAudioPlayer* player = [[AVAudioPlayer alloc] initWithContentsOfURL:url
-                                                                    error:&playerError];
+                                                                   error:&playerError];
     if (scoped) {
         [url stopAccessingSecurityScopedResource];
     }
@@ -112,7 +112,8 @@ static NSString* const kCustomSendSoundNameKey = @"custom_send_sound_name";
     NSString* directoryPath = [NSSearchPathForDirectoriesInDomains(
         NSApplicationSupportDirectory, NSUserDomainMask, YES) firstObject];
     NSURL* directoryURL = [[NSURL fileURLWithPath:directoryPath isDirectory:YES]
-        URLByAppendingPathComponent:@"NeoFreeBird" isDirectory:YES];
+        URLByAppendingPathComponent:@"NeoFreeBird"
+                        isDirectory:YES];
     NSFileManager* fileManager = [NSFileManager defaultManager];
     NSError* error = nil;
     if (![fileManager createDirectoryAtURL:directoryURL
@@ -126,11 +127,11 @@ static NSString* const kCustomSendSoundNameKey = @"custom_send_sound_name";
 
     NSString* extension = url.pathExtension.lowercaseString;
     NSString* fileName = extension.length > 0 ? [NSString stringWithFormat:@"%@.%@", url.lastPathComponent.stringByDeletingPathExtension, extension]
-                                           : @"custom_send_sound";
+                                              : @"custom_send_sound";
     NSURL* destinationURL = [directoryURL URLByAppendingPathComponent:fileName];
     scoped = [url startAccessingSecurityScopedResource];
     NSURL* temporaryURL = [directoryURL URLByAppendingPathComponent:
-        [NSString stringWithFormat:@".%@.tmp", NSUUID.UUID.UUIDString]];
+                                            [NSString stringWithFormat:@".%@.tmp", NSUUID.UUID.UUIDString]];
     BOOL copied = [fileManager copyItemAtURL:url toURL:temporaryURL error:&error];
     if (scoped) {
         [url stopAccessingSecurityScopedResource];
@@ -149,9 +150,9 @@ static NSString* const kCustomSendSoundNameKey = @"custom_send_sound_name";
     }
 
     [[NSUserDefaults standardUserDefaults] setObject:destinationURL.path
-                                               forKey:kCustomSendSoundPathKey];
+                                              forKey:kCustomSendSoundPathKey];
     [[NSUserDefaults standardUserDefaults] setObject:fileName
-                                               forKey:kCustomSendSoundNameKey];
+                                              forKey:kCustomSendSoundNameKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
     [self.tableView reloadData];
 }

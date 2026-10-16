@@ -75,7 +75,6 @@ static NSNumber* FeatureSwitchOverrideValueForKey(NSString* key) {
         return hideCustomTimelines ? @NO : nil;
     }
 
-
     // Restore the animated launch screen (AppLifecycle.x strips its X-shaped
     // reveal mask)
     if ([key isEqualToString:@"app_launch_animated_launch_screen_enabled"]) {
