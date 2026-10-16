@@ -288,7 +288,7 @@
         @{
             @"title": @"Thea 🐾",
             @"username": @"nyaathea",
-            @"avatarURL": @"https://unavatar.io/github/nyathea?fallback=https://neofreebird.com/images/"
+            @"avatarURL": @"https://unavatar.io/x/nyaathea?fallback=https://neofreebird.com/images/"
                           @"theameoww.png",
             @"userID": @"1541742676009226241"
         }
@@ -464,7 +464,7 @@
 }
 - (void)footerLabelLongPressed:(UILongPressGestureRecognizer*)sender {
     if (sender.state == UIGestureRecognizerStateBegan) {
-        NSURL* url = [NSURL URLWithString:@"https://www.youtube.com/watch?v=EwOhODw6WOg"];
+        NSURL* url = [NSURL URLWithString:@"https://www.youtube.com/watch?v=OxLH0nnUnCY"];
         if ([[UIApplication sharedApplication] canOpenURL:url]) {
             [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
         }
