@@ -54,6 +54,123 @@ static BOOL IsInEditHistory(UIViewController* viewController) {
     return NO;
 }
 
+static const void* ConversationOpenedFromProfileKey = &ConversationOpenedFromProfileKey;
+
+static BOOL StringSuggestsProfile(id value) {
+    if (![value isKindOfClass:[NSString class]]) {
+        return NO;
+    }
+
+    return [[(NSString*)value lowercaseString] containsString:@"profile"];
+}
+
+static id ObjectForSelector(id object, SEL selector) {
+    return ((id (*)(id, SEL))objc_msgSend)(object, selector);
+}
+
+static BOOL NavigationMetadataIsFromProfile(id metadata) {
+    if (!metadata) {
+        return NO;
+    }
+
+    if ([metadata respondsToSelector:@selector(name)] &&
+        StringSuggestsProfile(ObjectForSelector(metadata, @selector(name)))) {
+        return YES;
+    }
+
+    id scribeContext = nil;
+    if ([metadata respondsToSelector:@selector(sourceScribeContext)]) {
+        scribeContext = ObjectForSelector(metadata, @selector(sourceScribeContext));
+    }
+
+    for (NSUInteger depth = 0; scribeContext && depth < 8; depth++) {
+        NSArray<NSString*>* selectors = @[@"page", @"section", @"component", @"element"];
+        for (NSString* selectorName in selectors) {
+            SEL selector = NSSelectorFromString(selectorName);
+            if ([scribeContext respondsToSelector:selector] &&
+                StringSuggestsProfile(ObjectForSelector(scribeContext, selector))) {
+                return YES;
+            }
+        }
+
+        if (![scribeContext respondsToSelector:@selector(sourceContext)]) {
+            break;
+        }
+        scribeContext = ObjectForSelector(scribeContext, @selector(sourceContext));
+    }
+
+    return NO;
+}
+
+static BOOL IsInProfileOriginConversation(UIViewController* viewController) {
+    UIViewController* currentVC = viewController;
+
+    while (currentVC) {
+        if (objc_getAssociatedObject(currentVC, ConversationOpenedFromProfileKey)) {
+            return YES;
+        }
+
+        if (currentVC.parentViewController) {
+            currentVC = currentVC.parentViewController;
+        } else if (currentVC.navigationController) {
+            currentVC = currentVC.navigationController;
+        } else if (currentVC.presentingViewController) {
+            currentVC = currentVC.presentingViewController;
+        } else {
+            break;
+        }
+    }
+
+    return NO;
+}
+
+%hook T1ConversationContainerViewController
+
+- (id)initWithAccount:(id)account
+             statusID:(long long)statusID
+statusNavigationContext:(id)statusNavigationContext
+         scribeContext:(id)scribeContext
+sourceNavigationMetadata:(id)sourceNavigationMetadata
+overrideNavigationMetadata:(id)overrideNavigationMetadata
+shouldIncludeReferrerParams:(BOOL)shouldIncludeReferrerParams
+shouldStartQuickPromoteOnOpen:(BOOL)shouldStartQuickPromoteOnOpen
+     excludedStatusIDs:(id)excludedStatusIDs {
+    id conversation = %orig(account, statusID, statusNavigationContext, scribeContext,
+                             sourceNavigationMetadata, overrideNavigationMetadata,
+                             shouldIncludeReferrerParams, shouldStartQuickPromoteOnOpen,
+                             excludedStatusIDs);
+    if (conversation && NavigationMetadataIsFromProfile(sourceNavigationMetadata)) {
+        objc_setAssociatedObject(conversation, ConversationOpenedFromProfileKey, @YES,
+                                 OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+
+    return conversation;
+}
+
+- (id)initWithAccount:(id)account
+             viewModel:(id)viewModel
+statusNavigationContext:(id)statusNavigationContext
+         scribeContext:(id)scribeContext
+sourceNavigationMetadata:(id)sourceNavigationMetadata
+overrideNavigationMetadata:(id)overrideNavigationMetadata
+shouldIncludeReferrerParams:(BOOL)shouldIncludeReferrerParams
+shouldNotifyDisplayLatestEdit:(BOOL)shouldNotifyDisplayLatestEdit
+shouldStartQuickPromoteOnOpen:(BOOL)shouldStartQuickPromoteOnOpen
+     excludedStatusIDs:(id)excludedStatusIDs {
+    id conversation = %orig(account, viewModel, statusNavigationContext, scribeContext,
+                             sourceNavigationMetadata, overrideNavigationMetadata,
+                             shouldIncludeReferrerParams, shouldNotifyDisplayLatestEdit,
+                             shouldStartQuickPromoteOnOpen, excludedStatusIDs);
+    if (conversation && NavigationMetadataIsFromProfile(sourceNavigationMetadata)) {
+        objc_setAssociatedObject(conversation, ConversationOpenedFromProfileKey, @YES,
+                                 OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+
+    return conversation;
+}
+
+%end
+
 %hook T1EditHistoryViewControllerFactory
 
 + (id)viewControllerWithAccount:(id)account
@@ -199,7 +316,7 @@ static BOOL ItemIsRetweetOfBlockingUser(id viewModel) {
 }
 
 static BOOL ItemIsQuoteTweet(id viewModel) {
-    if (!ItemRespondsAndInvokesBOOL(viewModel, @selector(isQuoteTweet))) {
+    if (!ItemRespondsAndInvokesBOOL(viewModel, @selector(isQuoteStatus))) {
         return NO;
     }
 
@@ -246,6 +363,7 @@ static BOOL ItemIsRetweet(id viewModel) {
 // Surfaces.
 @property (nonatomic) BOOL inConversation;
 @property (nonatomic) BOOL inProfile;
+@property (nonatomic) BOOL openedFromProfile;
 @property (nonatomic) BOOL inSearch;
 @property (nonatomic) BOOL inEditHistory;
 
@@ -468,6 +586,7 @@ static NSSet<NSNumber*>* ConversationAuthorRepliedToUserIDs(NSArray* sections,
     context.inConversation =
         IsInHierarchyOfClass(dataViewController, @"T1ConversationContainerViewController");
     context.inProfile = IsInHierarchyOfClass(dataViewController, @"T1ProfileViewController");
+    context.openedFromProfile = IsInProfileOriginConversation(dataViewController);
     context.inSearch = IsInHierarchyOfClass(dataViewController, @"TTSSearchContainerViewControllerV2");
     context.inEditHistory = IsInEditHistory(dataViewController);
 
@@ -478,8 +597,11 @@ static NSSet<NSNumber*>* ConversationAuthorRepliedToUserIDs(NSArray* sections,
     context.hideBlockedRetweets = [BHTSettings boolForKey:@"hide_blocked_retweets"];
     BOOL inPostInteractions =
         IsInHierarchyOfClass(dataViewController, @"T1PostInteractionsViewController");
-    context.hideQuoteTweets = [BHTSettings boolForKey:@"hide_quote_tweets"] && !inPostInteractions;
-    context.hideRetweets = [BHTSettings boolForKey:@"hide_retweets"] && !inPostInteractions;
+    BOOL openedTweetFromProfile = context.inProfile || context.openedFromProfile;
+    context.hideQuoteTweets = [BHTSettings boolForKey:@"hide_quote_tweets"] &&
+                              !inPostInteractions && !openedTweetFromProfile;
+    context.hideRetweets = [BHTSettings boolForKey:@"hide_retweets"] &&
+                           !inPostInteractions && !openedTweetFromProfile;
 
     return context;
 }
@@ -510,6 +632,7 @@ static NSSet<NSNumber*>* ConversationAuthorRepliedToUserIDs(NSArray* sections,
            self.hidePrompts == other.hidePrompts && self.hideVerified == other.hideVerified &&
            self.hideBlockedRetweets == other.hideBlockedRetweets &&
            self.inConversation == other.inConversation && self.inProfile == other.inProfile &&
+           self.openedFromProfile == other.openedFromProfile &&
            self.inSearch == other.inSearch &&
            self.hideQuoteTweets == other.hideQuoteTweets &&
            self.hideRetweets == other.hideRetweets &&
