@@ -191,6 +191,17 @@ static NSNumber* FeatureSwitchOverrideValueForKey(NSString* key) {
         return @NO;
     }
 
+    if ([key isEqualToString:@"grok_ask_grok_button_under_post_focal_enabled"]
+    || [key isEqualToString:@"grok_ask_grok_button_under_post_preview_enabled"]
+    || [key isEqualToString:@"xchat_ask_grok_enabled"]
+    || [key isEqualToString:@"grok_explain_text_selection_ask_grok_enabled"]) {
+        return @NO;
+    }
+
+    if ([key isEqualToString:@"post_about_hide_grok_pills_enabled"]) {
+        return @([BHTSettings boolForKey:@"hide_grok_analyze"]);
+    }
+
     if ([key isEqualToString:@"ios_settings_redesign_enabled"]) {
         return @YES;
     }
@@ -232,6 +243,14 @@ static NSNumber* FeatureSwitchOverrideValueForKey(NSString* key) {
         [key isEqualToString:@"ios_ui_quote_tweet_multi_media_carousel_enabled"]) {
         if ([BHTSettings boolForKey:@"disable_media_carousel"]) {
             return @NO;
+        }
+    }
+
+    if ([key isEqualToString:@"ios_liquid_glass_redesign_enabled"] ||
+        [key isEqualToString:@"ios_liquid_glass_redesign_quick_composer_enabled"] ||
+        [key isEqualToString:@"xchat_liquid_glass_convo_header_enabled"]) {
+        if ([BHTSettings boolForKey:@"liquid_glass"]) {
+            return @YES;
         }
     }
 

@@ -297,6 +297,10 @@
 "REPLY_IN_WEBVIEW_TITLE" = "Reply in web view";
 "REPLY_IN_WEBVIEW_DETAIL" = "Fallback if replies fail to send. Replies on x.com instead of in the app.";
 
+"LIQUID_GLASS_TITLE" = "Enable Liquid Glass";
+"LIQUID_GLASS_DETAIL" = "Enables X's new Liquid Glass interface. This is an experimental redesign and may cause issues.";
+"LIQUID_GLASS_RESTART_ALERT_MESSAGE" = "The Liquid Glass redesign requires a restart to take effect.";
+
 /*Debug*/
 "FLEX_TWITTER_TITLE" = "Debug mode";
 "FLEX_TWITTER_DETAIL" = "Enables FLEX for debugging and inspecting Twitter's views and data.";

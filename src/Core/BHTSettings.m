@@ -441,6 +441,9 @@ static NSDictionary<NSString*, NSDictionary*>* BHTSettingsPages(void) {
                 @"settings": @[
                     @{@"key": @"reply_in_webview",
                       @"default": @NO,
+                      @"type": @"toggle"},
+                    @{@"key": @"liquid_glass",
+                      @"default": @NO,
                       @"type": @"toggle"}
                 ]
             },
