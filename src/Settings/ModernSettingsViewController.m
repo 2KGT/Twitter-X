@@ -13,6 +13,7 @@
 #import "Settings/Pages/AppearanceSettingsViewController.h"
 #import "Settings/Pages/ChatSettingsViewController.h"
 #import "Settings/Pages/DebugSettingsViewController.h"
+#import "Settings/Pages/ExperimentalSettingsViewController.h"
 #import "Settings/Pages/PresetsSettingsViewController.h"
 #import "Settings/Pages/ProfilesSettingsViewController.h"
 #import "Settings/Pages/TimelinesSettingsViewController.h"
@@ -732,9 +733,8 @@
 }
 
 - (void)showExperimentalSettings {
-    ModernSettingsPageViewController* vc =
-        [[ModernSettingsPageViewController alloc] initWithAccount:self.account
-                                                          pageKey:@"experimental"];
+    ExperimentalSettingsViewController* vc =
+        [[ExperimentalSettingsViewController alloc] initWithAccount:self.account];
     [self.navigationController pushViewController:vc animated:YES];
 }
 

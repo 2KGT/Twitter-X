@@ -7,6 +7,42 @@
 #import "Headers/TFNHeaders.h"
 #import "Headers/UIHeaders.h"
 #import "HookHelpers.h"
+#import <objc/runtime.h>
+
+static bool NFBLiquidGlassEnabled(void) {
+    return [BHTSettings boolForKey:@"liquid_glass"];
+}
+
+%hook T1LiquidGlassGateInstaller
+
++ (void)installGateForAccount:(id)account {
+    %orig(account);
+    ((void (*)(id, SEL, BOOL))objc_msgSend)(
+        self, @selector(installGateWithRedesignEnabled:), NFBLiquidGlassEnabled());
+}
+
++ (void)installGateWithRedesignEnabled:(BOOL)enabled {
+    %orig(NFBLiquidGlassEnabled());
+}
+
+%end
+
+%hook _TtC14T1TwitterSwift27LiquidGlassRedesignFeatures
+
+- (instancetype)initWithFeatureSwitches:(id)switches
+                isSecondFactorSatisfied:(BOOL)satisfied {
+    return %orig(switches, YES);
+}
+
+- (BOOL)isRedesignEnabled {
+    return NFBLiquidGlassEnabled();
+}
+
++ (BOOL)isQuickComposerEnabledWithFeatureSwitches:(id)switches {
+    return NFBLiquidGlassEnabled();
+}
+
+%end
 
 // MARK: - Custom accent color
 
@@ -381,7 +417,7 @@ static BOOL BHTIsExploreSearchBackgroundView(UIView* view) {
 
 - (void)didMoveToWindow {
     %orig;
-    if (self.window && BHTDimThemeEnabled()) {
+    if (self.window && BHTDimThemeEnabled() && !NFBLiquidGlassEnabled()) {
         self.backgroundColor = BHTDimBackgroundColor();
     }
 }
@@ -447,7 +483,6 @@ static NSArray* orderedTabEntries(NSArray* entries) {
 
     return orderedEntries;
 }
-
 // The single ordered spine that feeds both the tab buttons and their content, so
 // filtering/reordering here keeps taps mapped to the right panel.
 %hook T1TabbedAppNavigationViewController
