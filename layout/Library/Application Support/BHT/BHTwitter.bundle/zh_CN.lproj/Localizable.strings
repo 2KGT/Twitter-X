@@ -45,7 +45,7 @@
 "MODERN_SETTINGS_BRANDING_SUBTITLE" = "调整您看到多少 Twitter 品牌还原效果。";
 
 "MODERN_SETTINGS_EXPERIMENTAL_TITLE" = "实验室";
-"MODERN_SETTINGS_EXPERIMENTAL_SUBTITLE" = "试用不稳定的新功能。";
+"MODERN_SETTINGS_EXPERIMENTAL_SUBTITLE" = "试用正在测试的新功能。";
 
 "MODERN_SETTINGS_DEBUG_TITLE" = "调试";
 "MODERN_SETTINGS_DEBUG_SUBTITLE" = "找出某项功能无法正常工作的原因。";
@@ -74,7 +74,7 @@
 "SHARING_DOMAIN_TITLE" = "分享域名";
 
 "BLOCK_LINK_TRACKING_TITLE" = "阻止链接跟踪";
-"BLOCK_LINK_TRACKING_DETAIL" = "直接打开链接而不是通过 t.co，不再有后台 t.co 请求或广告点击 ID。Twitter 的不安全链接警告也不会出现。";
+"BLOCK_LINK_TRACKING_DETAIL" = "直接打开链接而不是通过 t.co，这样就不会产生 t.co 的后台请求或广告点击 ID。Twitter 的不安全链接警告也不会出现。";
 
 "STRIP_TRACKING_PARAMS_TITLE" = "移除跟踪参数";
 "STRIP_TRACKING_PARAMS_DETAIL" = "从你打开的链接中移除 utm_ 及其他跟踪标签。";
@@ -161,7 +161,7 @@
 
 /*Photos and Videos*/
 "AUTO_HIGHEST_LOAD_TITLE" = "高质量媒体";
-"AUTO_HIGHEST_LOAD_DETAIL" = "以最佳质量上传和浏览媒体内容。";
+"AUTO_HIGHEST_LOAD_DETAIL" = "始终以最佳质量加载图片和视频。";
 
 "DISABLE_VIDEO_CAPTIONS_TITLE" = "关闭视频字幕";
 
@@ -179,7 +179,7 @@
 "UNDO_TWEET_TITLE" = "撤销推文";
 
 "DOWNLOAD_VIDEOS_TITLE" = "下载媒体";
-"DOWNLOAD_VIDEOS_DETAIL" = "直接从推文中保存视频或 GIF。";
+"DOWNLOAD_VIDEOS_DETAIL" = "直接从推文的更多选项保存视频或 GIF。";
 
 "DIRECT_SAVE_TITLE" = "保存至“照片”";
 "DIRECT_SAVE_DETAIL" = "视频会直接保存到你的“照片”应用中。";
@@ -200,7 +200,7 @@
 "HIDE_SPACES_TITLE" = "隐藏 Spaces 栏";
 
 "NO_TAB_BAR_HIDING_TITLE" = "始终显示标签栏";
-"NO_TAB_BAR_HIDING_DETAIL" = "滚动时不要隐藏标签栏（可能导致问题）。";
+"NO_TAB_BAR_HIDING_DETAIL" = "滚动时不要隐藏标签栏。";
 
 "HIDE_CUSTOM_TIMELINES_TITLE" = "隐藏自定义时间线";
 "HIDE_CUSTOM_TIMELINES_DETAIL" = "移除首页时间线标签中的添加按钮。";
@@ -229,6 +229,10 @@
 "REPLY_IN_WEBVIEW_TITLE" = "在网页视图中回复";
 "REPLY_IN_WEBVIEW_DETAIL" = "在网页视图中打开回复框以避开 attestation。";
 
+"LIQUID_GLASS_TITLE" = "启用 Liquid Glass";
+"LIQUID_GLASS_DETAIL" = "启用 X 的新 Liquid Glass 界面。这是一项实验性设计，可能会导致问题。";
+"LIQUID_GLASS_RESTART_ALERT_MESSAGE" = "Liquid Glass 设计需要重新启动才能生效。";
+
 /*Debug*/
 "FLEX_TWITTER_TITLE" = "FLEX 调试模式";
 "FLEX_TWITTER_DETAIL" = "使用 FLEX 工具调试 Twitter。";
@@ -253,9 +257,12 @@
 /*Copy profile info*/
 "COPY_PROFILE_INFO_MENU_OPTION_1" = "复制简介";
 "COPY_PROFILE_INFO_MENU_OPTION_2" = "复制用户名";
-"COPY_PROFILE_INFO_MENU_OPTION_3" = "复制完整用户名";
+"COPY_PROFILE_INFO_MENU_OPTION_3" = "复制昵称";
 "COPY_PROFILE_INFO_MENU_OPTION_4" = "复制简介链接";
 "COPY_PROFILE_INFO_MENU_OPTION_5" = "复制位置";
+"COPY_PROFILE_INFO_MENU_OPTION_6" = "复制个人资料链接";
+"COPY_PROFILE_INFO_MENU_OPTION_7" = "复制用户 ID";
+"COPY_PROFILE_INFO_MENU_OPTION_8" = "复制加入日期";
 
 /*Theme*/
 "THEME_SETTINGS_NAVIGATION_TITLE" = "更换主题";
@@ -450,11 +457,6 @@
 
 "UPLOAD_FULL_HD_VIDEOS_TITLE" = "上传全高清视频";
 "UPLOAD_FULL_HD_VIDEOS_DETAIL" = "解锁以 1080p 上传视频的能力。";
-
-/*Copy profile info*/
-"COPY_PROFILE_INFO_MENU_OPTION_6" = "复制个人资料链接";
-"COPY_PROFILE_INFO_MENU_OPTION_7" = "复制用户 ID";
-"COPY_PROFILE_INFO_MENU_OPTION_8" = "复制注册日期";
 
 /*Launch & Dim theme*/
 "BLUE_LAUNCH_SCREEN_TITLE" = "恢复蓝色启动画面";
