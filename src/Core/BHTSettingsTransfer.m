@@ -254,4 +254,18 @@ static NSError* BHTTransferError(BHTSettingsTransferErrorCode code, NSString* me
     }
 }
 
++ (void)resetAllSettings {
+    // Go through BHTSettings to reset all settings to their default values
+    for (NSString* key in [BHTSettings allPreferenceKeys]) {
+        id defaultValue = [BHTSettings settingForKey:key][@"default"];
+        if (defaultValue) {
+            [[NSUserDefaults standardUserDefaults] setObject:defaultValue forKey:key];
+        } else {
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:key];
+        }
+    }
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    [self applySideEffectsForImportedKeys:[BHTSettingsTransfer transferableKeys]];
+}
+
 @end

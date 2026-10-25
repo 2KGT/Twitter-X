@@ -445,6 +445,13 @@
 /* Presets — settings import and export */
 "SETTINGS_EXPORT_TITLE" = "Export settings";
 "SETTINGS_IMPORT_TITLE" = "Import settings";
+"SETTINGS_RESET_TITLE" = "Reset settings";
+
+"SETTINGS_RESET_CONFIRM_TITLE" = "Reset all settings?";
+"SETTINGS_RESET_CONFIRM_MESSAGE" = "This will restore all NeoFreeBird settings to their defaults.";
+"SETTINGS_RESET_CONFIRM_BUTTON" = "Reset";
+"SETTINGS_RESET_SUCCESS_TITLE" = "Settings reset";
+"SETTINGS_RESET_SUCCESS_MESSAGE" = "All settings have been restored. Restart the app for all changes to take effect.";
 
 "CUSTOM_SEND_SOUND_TITLE" = "Import send sound";
 "CUSTOM_SEND_SOUND_DEFAULT" = "No custom sound selected";

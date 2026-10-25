@@ -432,6 +432,11 @@ static NSDictionary<NSString*, NSDictionary*>* BHTSettingsPages(void) {
                         @"type": @"compactButton",
                         @"titleKey": @"SETTINGS_IMPORT_TITLE",
                         @"action": @"importSettings:"
+                    },
+                    @{
+                        @"type": @"compactButton",
+                        @"titleKey": @"SETTINGS_RESET_TITLE",
+                        @"action": @"resetSettings:"
                     }
                 ]
             },
