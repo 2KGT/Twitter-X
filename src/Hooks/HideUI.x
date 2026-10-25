@@ -195,6 +195,7 @@
     if (view && view == self.messageButton &&
         [BHTSettings boolForKey:@"hide_message_button"]) {
         hidden = YES;
+        view.userInteractionEnabled = NO;
     }
     %orig(hidden, view);
 }
