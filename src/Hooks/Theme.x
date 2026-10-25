@@ -511,6 +511,47 @@ static NSArray* orderedTabEntries(NSArray* entries) {
 
 // MARK: - Tab bar icon and label theming
 
+static char BHTGlassTabOriginalTintKey;
+
+static void BHTApplyGlassTabAccent(UIView* item) {
+    if (item.isAccessibilityElement) return;
+
+    Ivar field = class_getInstanceVariable(object_getClass(item), "imageView");
+    UIImageView* imageView = field ? object_getIvar(item, field) : nil;
+    if (![imageView isKindOfClass:UIImageView.class]) return;
+
+    id originalTint = objc_getAssociatedObject(imageView, &BHTGlassTabOriginalTintKey);
+    UIColor* tint;
+    if ([BHTSettings boolForKey:@"tab_bar_theming"]) {
+        if (!originalTint) {
+            objc_setAssociatedObject(imageView, &BHTGlassTabOriginalTintKey,
+                                     imageView.tintColor ?: (id)NSNull.null,
+                                     OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        }
+        tint = CurrentAccentColor();
+    } else {
+        if (!originalTint) return;
+        tint = originalTint == NSNull.null ? nil : originalTint;
+        objc_setAssociatedObject(imageView, &BHTGlassTabOriginalTintKey, nil,
+                                 OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    if (![imageView.tintColor isEqual:tint]) imageView.tintColor = tint;
+}
+
+%hook _TtC11XNavigation14TabBarItemView
+
+- (void)layoutSubviews {
+    %orig;
+    BHTApplyGlassTabAccent((UIView*)self);
+}
+
+%new
+- (void)nfb_applyGlassTabAccent {
+    BHTApplyGlassTabAccent((UIView*)self);
+}
+
+%end
+
 static BOOL updatingTabIconColor = NO;
 
 static UIColor* tabItemColor(BOOL selected) {

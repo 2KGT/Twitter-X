@@ -133,6 +133,9 @@ static UIColor* NativeAccentColor(NSUInteger option) {
 }
 
 static void reapplySegmentedCaretAccent(UIView* view) {
+    if ([view respondsToSelector:@selector(nfb_applyGlassTabAccent)]) {
+        [view performSelector:@selector(nfb_applyGlassTabAccent)];
+    }
     static Class caretClass;
     static Class tabBarClass;
     static dispatch_once_t onceToken;

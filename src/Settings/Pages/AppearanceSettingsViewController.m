@@ -124,6 +124,9 @@
 }
 
 - (void)refreshTabViewsWithThemingInView:(UIView*)view {
+    if ([view respondsToSelector:@selector(nfb_applyGlassTabAccent)]) {
+        [view performSelector:@selector(nfb_applyGlassTabAccent)];
+    }
     if ([view isKindOfClass:NSClassFromString(@"T1TabView")]) {
         if ([view respondsToSelector:@selector(_t1_updateImageViewAnimated:)]) {
             [view performSelector:@selector(_t1_updateImageViewAnimated:) withObject:@(NO)];
