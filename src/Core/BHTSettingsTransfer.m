@@ -33,6 +33,8 @@ static NSString* const kVisibleTabsKey = @"bh_tabs_visible";
 static NSString* const kAppIconKey = @"bh_last_selected_app_icon";
 static NSString* const kPrimaryIconSentinel = @"PrimaryIcon";
 
+static NSArray* skippedKeys = @[@"custom_send_sound_name"];
+
 // The tab registry (every tab seen on this device) is deliberately absent: it
 // is captured metadata, not a choice, and is rebuilt on launch.
 static NSDictionary<NSString*, Class>* BHTExtraTransferableKeys(void) {
@@ -56,9 +58,11 @@ static NSDictionary<NSString*, Class>* BHTTransferableKeyClasses(void) {
     dispatch_once(&onceToken, ^{
         NSMutableDictionary<NSString*, Class>* map = [NSMutableDictionary dictionary];
         for (NSString* key in [BHTSettings allPreferenceKeys]) {
-            id defaultValue = [BHTSettings settingForKey:key][@"default"];
+            if (![skippedKeys containsObject:key]) {
+                id defaultValue = [BHTSettings settingForKey:key][@"default"];
             map[key] = [defaultValue isKindOfClass:[NSNumber class]] ? [NSNumber class]
                                                                      : [NSString class];
+            }
         }
         [map addEntriesFromDictionary:BHTExtraTransferableKeys()];
         classes = [map copy];
