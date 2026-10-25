@@ -252,7 +252,7 @@
 @property (nonatomic, readonly) NSArray* inlineMediaInfos;
 @end
 
-@interface _TtC16ChatConversation26MessageAttachmentAudioView : UIView
+@interface _TtC6ChatUI26MessageAttachmentAudioView : UIView
 @end
 
 #pragma mark - Host & web views
@@ -383,4 +383,12 @@
 
 @interface T1ViewControllerScribeEventObserver : NSObject
 - (void)viewControllerApplicationDidBecomeActive:(id)active;
+@end
+
+@interface T1TabCustomizationConfig : NSObject
+@property (nonatomic, readonly) _Bool isTabCustomizationEnabled;
+@end
+
+@interface T1BlockMuteActionPerformer : NSObject
+- (void)showBlockAlertForContext:(id)context;
 @end
