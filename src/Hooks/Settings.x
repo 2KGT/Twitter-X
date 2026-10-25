@@ -406,3 +406,45 @@ static NSString* CustomFontName(BOOL isBold) {
 }
 
 %end
+
+static UIFont* CustomFontReplacingFont(UIFont* originalFont, BOOL isBold) {
+    NSString* customName = CustomFontName(isBold);
+    if (!customName || !originalFont) {
+        return originalFont;
+    }
+
+    return [UIFont fontWithName:customName size:originalFont.pointSize] ?: originalFont;
+}
+
+%hook XNAVNavigationController
+
+- (void)viewDidLoad {
+    %orig;
+
+    NSString* customName = CustomFontName(YES);
+    if (!customName) {
+        return;
+    }
+
+    UINavigationBar* navigationBar = self.navigationBar;
+    UINavigationBarAppearance* appearance =
+        [navigationBar.standardAppearance copy];
+
+    NSMutableDictionary* attributes =
+        [appearance.titleTextAttributes mutableCopy] ?:
+        [NSMutableDictionary dictionary];
+
+    UIFont* originalFont = attributes[NSFontAttributeName];
+    CGFloat size = originalFont ? originalFont.pointSize : 17.0;
+    UIFont* customFont = [UIFont fontWithName:customName size:size];
+
+    if (!customFont) {
+        return;
+    }
+
+    attributes[NSFontAttributeName] = customFont;
+    appearance.titleTextAttributes = attributes;
+    navigationBar.standardAppearance = appearance;
+}
+
+%end

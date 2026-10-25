@@ -11,3 +11,6 @@
 + (UIFont*)tabularDigitsFontOfSize:(CGFloat)size weight:(UIFontWeight)weight;
 + (void)resetCachedFonts;
 @end
+
+@interface XNAVNavigationController: UINavigationController
+@end
