@@ -88,10 +88,10 @@
 }
 
 - (void)showCustomTabBarVC:(NSDictionary*)sender {
-    Class CustomTabBarViewControllerClass = objc_getClass("CustomTabBarViewController");
-    if (CustomTabBarViewControllerClass) {
-        UIViewController* customTabBarVC = [[CustomTabBarViewControllerClass alloc] init];
-        if (self.account) {
+    UIViewController* customTabBarVC = [CustomTabBarUtility editorForAccount:self.account];
+    if (customTabBarVC) {
+        // X supplies the native editor's own title and account subtitle.
+        if (self.account && ![CustomTabBarUtility usesNativeEditor]) {
             [customTabBarVC.navigationItem
                 setTitleView:[objc_getClass("TFNTitleView")
                                  titleViewWithTitle:[[BHTBundle sharedBundle]
@@ -100,6 +100,16 @@
                                            subtitle:self.account.displayUsername]];
         }
         [self.navigationController pushViewController:customTabBarVC animated:YES];
+    } else {
+        BHTBundle* bundle = [BHTBundle sharedBundle];
+        UIAlertController* alert = [UIAlertController
+            alertControllerWithTitle:[bundle localizedStringForKey:@"CUSTOM_TAB_BAR_SETTINGS_NAVIGATION_TITLE"]
+                             message:[bundle localizedStringForKey:@"UNKNOWN_ERROR"]
+                      preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:[bundle localizedStringForKey:@"OK_ACTION_LABEL"]
+                                                 style:UIAlertActionStyleCancel
+                                               handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
     }
 }
 
