@@ -113,6 +113,11 @@
     %orig;
 
     if ([BHTSettings boolForKey:@"hide_trends"]) {
+        UIView* viewIfLoaded = [(UIViewController*)self viewIfLoaded];
+        if (viewIfLoaded) {
+            viewIfLoaded.hidden = YES;
+            viewIfLoaded.userInteractionEnabled = NO;
+        }
         for (UIViewController* child in
              [(UIViewController*)self childViewControllers]) {
             if ([child isKindOfClass:
