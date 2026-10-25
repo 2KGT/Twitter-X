@@ -269,7 +269,6 @@
 - (void)setCurrentURL:(NSURL*)url;
 @property (nonatomic, readonly) NSURL* currentURL;
 - (WKWebView*)webView;
-- (id)updateConfiguration:(id)configuration;
 @end
 
 @interface T1WebViewController : T1BaseWebViewController
@@ -391,4 +390,7 @@
 
 @interface T1BlockMuteActionPerformer : NSObject
 - (void)showBlockAlertForContext:(id)context;
+@end
+
+@interface _TtC14T1TwitterSwift28FleetLineAccessoryController: NSObject
 @end
