@@ -87,6 +87,15 @@ static BOOL getAccountUserID(id account, long long* userID) {
     return YES;
 }
 
+// Objects are cleaner and don't crash like using raw selectors
+@protocol WebLoginObjectUserIDAccount <NSObject>
+- (instancetype)initWithUsername:(NSString*)username userID:(id)userID;
+@end
+
+@protocol WebLoginIntegerUserIDAccount <NSObject>
+- (instancetype)initWithUsername:(NSString*)username userID:(long long)userID;
+@end
+
 static id accountWithUsernameAndUserID(Class accountClass, NSString* username,
                                        long long userID) {
     SEL selector = @selector(initWithUsername:userID:);
@@ -98,12 +107,12 @@ static id accountWithUsernameAndUserID(Class accountClass, NSString* username,
     const char* argumentType = method_copyArgumentType(method, 3);
     id account = nil;
     if (argumentType && argumentType[0] == '@') {
-        account = ((id (*)(id, SEL, id, id))objc_msgSend)(
-            [accountClass alloc], selector, username, @(userID));
+        account = [(id<WebLoginObjectUserIDAccount>)[accountClass alloc]
+            initWithUsername:username userID:@(userID)];
     } else if (argumentType && (argumentType[0] == 'q' || argumentType[0] == 'Q' ||
                                 argumentType[0] == 'l' || argumentType[0] == 'L')) {
-        account = ((id (*)(id, SEL, id, long long))objc_msgSend)(
-            [accountClass alloc], selector, username, userID);
+        account = [(id<WebLoginIntegerUserIDAccount>)[accountClass alloc]
+            initWithUsername:username userID:userID];
     }
     if (argumentType) free((void*)argumentType);
     return account;
